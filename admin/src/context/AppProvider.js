@@ -1,17 +1,24 @@
 import React, { useState } from "react";
+import Users from "../controllers/user.controller";
 
 export const AppContext = React.createContext({
   companies: [], setCompanies: () => {},
   routeControl: [], setRoutControl: () => {},
-  universalChangeCounter: 0
+  universalChangeCounter: 0,
+  applicationTabs: 0,
 });
 
 const AppProvider = ({ children }) => {
+  const [USERS] = React.useState(new Users())
+  const [userData,setUserData] = React.useState(null)
+  const [notification,setNotification] = React.useState("")
   const [routeControl, setRoutControl] = useState({
     page: "/",
     indexItem: null,
   });
+  const [applicationTabs, setApplicationTabs] = useState(0);
   const [companies, setCompanies] = useState([]);
+  const [indexedViewData, setIndexedViewData] = useState({});
   const [universalChangeCounter, setUniversalChange] = useState(0);
 
   const onUniversalChange = () => {
@@ -24,6 +31,42 @@ const AppProvider = ({ children }) => {
     };
   };
 
+  const handleAlert = (message) => {
+    setNotification(message)
+
+    const interval = setTimeout(() => {
+      setNotification("")
+    }, 5000);
+  }
+
+  const handleUserSignIn = async ({username, password, verification}) => {
+    if (verification === undefined) {
+      // Handle password Sign In
+      const user = await USERS.signIn({password,username})
+      if (user.response === "successful" && user.userData && user.userData.accessGroup === "super-user") {
+        localStorage.setItem('user_data', JSON.stringify(user))
+        return true;
+      } else {
+        handleAlert("Invalid username or password!")
+        return false;
+      }
+    } else {
+      // Handle mobile Sign In
+      return false;
+    }
+  }
+
+  React.useEffect(() => {
+    // Check if user data exists in local storage
+    const storedUserData = localStorage.getItem('user_data');
+    const user = storedUserData ? JSON.parse(storedUserData) : null
+    setUserData(user);
+
+    if (user === null) {
+      if (!window.location.href.includes("/login")) window.location.href = "/login";
+    }
+  }, []); 
+
   // Pass getters and setters down to child components.
   return (
     <AppContext.Provider
@@ -31,6 +74,15 @@ const AppProvider = ({ children }) => {
         companies, setCompanies,
         routeControl, setRoutControl,
         onUniversalChange,
+        universalChangeCounter,
+        handleUserSignIn,
+        indexedViewData, 
+        setIndexedViewData,
+        applicationTabs, 
+        setApplicationTabs,
+        notification,
+        handleAlert,
+        userData,
       }}
     >
       {children}

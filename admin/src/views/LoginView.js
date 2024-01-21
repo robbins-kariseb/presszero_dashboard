@@ -1,10 +1,12 @@
 import React from 'react'
 import logo from "../images/logo.png"
 import { Link, useNavigate } from 'react-router-dom'
+import { AppContext } from '../context/AppProvider'
+import banner from "../images/press-zero-banner-02.png"
 
 
 function LoginView() {
-
+    const {handleUserSignIn} = React.useContext(AppContext)
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
 
@@ -12,12 +14,13 @@ function LoginView() {
 
     const navigate = useNavigate();
 
-    const handleSignin = () => {
-        if (username === "admin@presszero.com" && password === "admin@2024") {
+    const handleSignin = async () => {
+        const isAuthorized = await handleUserSignIn({username:username,password:password})
+        console.log(isAuthorized)
+        if (isAuthorized) {
             navigate('/dashboard');
         } else {
             setErrorMessage("Invalid username or password!")
-
             const interval = setTimeout(() => {
                 setErrorMessage("")
                 return ()=>clearTimeout(interval)
@@ -27,19 +30,22 @@ function LoginView() {
     
     return (
         <React.Fragment>
-            <div className='container'>
+            <div className='container flex'>
                 <div className='main-2x3'>
                     <center>
-                        <div className='info-banner'>
-                            <h3><span style={{color:"#1f553e"}}>WELCOME TO</span> <br/> PRESS ZERO</h3>
+                        <div style={{color:"#c7c7c7"}} className='info-banner'>
+                            <h3><span style={{color:"#ffffff"}}>WELCOME TO</span> <br/> PRESS ZERO</h3>
                         </div>
                     </center>
+                    <div className='banner'>
+                        <img src={banner} alt="PressZero" />
+                    </div>
                 </div>
                 <div className='main-1x3'>
                     <div className='branding'>
                         <center>
                             <img src={logo} alt="PressZero" />
-                            <h4>PRESS ZERO</h4>
+                            <h4>PRESS ZERO ADMIN</h4>
                         </center>
                     </div>
                     <div className='login-form'>

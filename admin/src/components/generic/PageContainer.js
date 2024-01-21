@@ -1,16 +1,19 @@
 import React from 'react'
-import SearchBar from './SearchBar'
 
-function PageContainer({pageTitle, pageSubtitle, children, searchSpace, searchPlaceholder}) {
+function PageContainer({pageTitle, pageSubtitle, children, addons}) {
 
     return (
-        <div className='page-container'>
+        <div className='page-container full-width'>
             <div className='page-heading'>
-                <h2>{pageTitle}</h2>
-                <p>{pageSubtitle}</p>
+                <div className='wrapper col-1x4'>
+                    <h2>{pageTitle}</h2>
+                    <div>{pageSubtitle}</div>
+                </div>
+                <div className='wrapper col-3x4'>
+                    {addons||""}
+                </div>
             </div>
             <br/>
-            <SearchBar placeholder={searchPlaceholder||"Search for Companies here..."} items={searchSpace||[]} />
             <div className='scrollable-container'>
                 {children}
             </div>

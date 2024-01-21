@@ -7,7 +7,7 @@ function LoadingOverlay() {
         <div className='loading-overlay'>
             <center>
                 <div className='loading-image'>
-                    <img src={loading} alt='Loading Overlay' />
+                    {/* <img src={loading} alt='Loading Overlay' /> */}
                 </div>
                 <div className='logo-overlay'>
                     <img src={logo} alt='Loading Overlay' />

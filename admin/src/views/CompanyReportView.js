@@ -82,7 +82,7 @@ function CompanyReportView() {
                         </div>
 
                         <div className="scrollable">
-                            <table className="clasic-table">
+                            <table className="classic-table">
                                 <thead>
                                     <tr>
                                         <td style={{width:150}}><div title="The Press Zero ticket number assigned to the chat." className="hint"><center>@Tocket Number</center></div></td>

@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Routes as Switch } from 'react-router-d
 import ChatMessagesView from './views/ChatMessagesView';
 import CompanyReportView from './views/CompanyReportView';
 import AppProvider from "./context/AppProvider";
+import CompanyView from './views/CompanyView';
 
 function RouteControl () {
   return (
@@ -16,6 +17,7 @@ function RouteControl () {
           <div className='container'>
             <Switch>
               <Route exact path="/dashboard" Component={DashboardView} />
+              <Route exact path="/company/*" Component={CompanyView} />
               <Route exact path="/messages" Component={ChatMessagesView} />
               <Route exact path="/company/report" Component={CompanyReportView} />
               <Route exact path="/login" Component={LoginView} />
