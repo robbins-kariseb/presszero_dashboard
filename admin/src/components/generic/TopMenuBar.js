@@ -12,8 +12,15 @@ function TopMenuBar({setTab}) {
     const navigate = useNavigate();
 
     const handleNavigate = (uri) => {
+        if (uri==='/') window.localStorage.clear();
+
         navigate(uri);
     }
+
+    /** 
+     * TODO: Implement a mechnanism that will check if the cursor has entered profile-container and setDropdown = true if so
+     * Also, if the cursor exits content-container the setDropdown = false should be triggered
+    */
 
     React.useEffect(()=>{},[userData])
 
@@ -61,19 +68,26 @@ function TopMenuBar({setTab}) {
                         <div className='form-control notifications-wrapper'>
                             <span className="material-symbols-outlined">notifications</span>
                         </div>
-                        <div className='form-control profile-control-wrapper'>
-                            <div className="profile">
+                        <div className='form-control profile-control-wrapper' onClick={()=>setDropdown(!dropdown)}>
+                            <div id="profile-container" className="profile">
                                 {userData && <div className="profile-image-wrapper">
-                                    <img src={`https://presszero-testing.eastus.cloudapp.azure.com${userData.userData.imageUrl}`} alt={''} />
+                                    <img src={`${userData.userData.imageUrl[0]==='/' ? 'https://presszero-testing.eastus.cloudapp.azure.com' : ''}${userData.userData.imageUrl}`} alt={'Profile Image'} />
                                 </div>}
                                 {userData && <div className="profile-info-wrapper">
                                     <h4>{userData.userData.name} {userData.userData.surname}</h4>
-                                    <h6>{userData.userData.accessGroup.toString().toUpperCase()}</h6>
+                                    <h6>{userData.userData.accessGroup === 'ghost-user' ? 'SUPER-USER' : userData.userData.accessGroup.toString().toUpperCase()}</h6>
                                     <div className='form-control'>
                                         <span className="material-symbols-outlined">arrow_drop_down</span>
                                     </div>
                                 </div>}
                             </div>
+                            {dropdown && <div id="content-container"  className='profile-content-wrapper'>
+                                <div className='content-wrapper'>
+                                    <ul>
+                                        <li onClick={()=>handleNavigate(`/`)}>Sign Out</li>
+                                    </ul>
+                                </div>
+                            </div>}
                         </div>
                     </div>
                 </div>

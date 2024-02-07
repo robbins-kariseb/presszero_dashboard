@@ -12,16 +12,16 @@ import WidgetCompanyMetrics from '../../components/metrics/widgets/WidgetCompany
 import StatusWidget from '../../components/generic/StatusWidget';
 import Button from '../../components/Button';
 import CompanyProfileEditorPopup from '../popups/CompanyProfileEditorPopup';
-import { queryCurrentDayOfWeek, queryOnlineStatus } from '../../utilities/helpers';
+import { formattedDate, queryCurrentDayOfWeek, queryOnlineStatus } from '../../utilities/helpers';
 import { useNavigate } from 'react-router-dom';
+import Subscriptions from '../../controllers/subscription.controller';
 
 function CompanySubscriptionsView() {
     const { indexedViewData, setIndexedViewData } = React.useContext(AppContext);
     const [isLoading, setIsLoading] = React.useState(true)
     const [API] = React.useState(new QuerySets())
-    const [unfilteredData, setUnfilteredData] = React.useState([])
-    const [data, setData] = React.useState([])
-    const [tickets, setTickets] = React.useState([])
+    const [SUBS] = React.useState(new Subscriptions())
+    const [products, setProducts] = React.useState([])
     const [chatData, setChatData] = React.useState([])
     const [preview, setPreview] = React.useState(null)
     const [searchPhrase, setSearchPhrase] = React.useState("")
@@ -29,59 +29,15 @@ function CompanySubscriptionsView() {
     const [menuTab, setMenuTab] = React.useState(0)
     const [timeSeriesTab, setTimeSeriesTab] = React.useState(0)
     const [isLoaded, setIsLoaded] = React.useState(false);
-    const [tabMetrics, setTabMetrics] = React.useState({});
 
     const navigate = useNavigate();
     const handleNavigate = (uri) => navigate(uri);
 
     const hidePreview = () => setPreview(null)
 
-    let searchResults = searchPhrase.length < 2 ? [] : data.filter((e) => {
-        const keywords = searchPhrase.split(' ');
-        const itemText = `${e.searchName} ${e.searchCategory}`.toLowerCase();
-
-        return keywords.every((word) => itemText.includes(word.toLowerCase()));
-    });
-
-    if (searchResults.length === 0) searchResults = data;
-
-    const handleDelete = () => {
-        if (window.confirm("This will remove the company from the system completely! Would you like to proceed?")) {
-            API.deleteModel({model: "company", id: indexedViewData.id}).then((res)=>{
-                if (res.response === "deleted") {
-                    handleNavigate("/dashboard")
-                }
-            })
-        }
-    }
-
     React.useEffect(() => {
         const init = async () => {
             try {
-
-                const companies = await API.getAllCompanies()
-                companies.items.forEach((e) => {
-                    e.searchName = e.businessName;
-                    e.searchCategory = e.categoryDefault;
-                    e.searchImage = e.logoUrl;
-                });
-                setUnfilteredData(companies.items)
-                setData(companies.items.filter((a) => {
-                    return a.verified === true;
-                }))
-
-                setTabMetrics({
-                    verified: companies.items.filter((a) => {
-                        return a.verified === true;
-                    }).length,
-                    unverified: companies.items.filter((a) => {
-                        return a.verified === false;
-                    }).length,
-                    requested: companies.items.filter((a) => {
-                        return a.requested === false;
-                    }).length
-                })
-
                 const chats = await API.getAllChatStatistics()
                 chats.items.forEach((e) => {
                     e.searchName = e.businessName;
@@ -89,6 +45,7 @@ function CompanySubscriptionsView() {
                     e.searchImage = e.logoUrl;
                 });
                 setChatData(chats.items)
+                setIsLoaded(true)
             } catch (ex) {
                 console.warn(ex)
             }
@@ -98,58 +55,40 @@ function CompanySubscriptionsView() {
     }, [API])
 
     React.useEffect(() => {
-        if (tab === 0) {
-            const dataset = unfilteredData.filter((a) => {
-                return a.verified === true;
-            })
-
-            setData(dataset)
-        } else if (tab === 1) {
-            const dataset = unfilteredData.filter((a) => {
-                return a.verified === false;
-            })
-
-            setData(dataset)
-        } else if (tab === 2) {
-            const dataset = unfilteredData.filter((a) => {
-                return a.unsubscribed === true;
-            })
-
-            setData(dataset)
-        }
-    }, [tab])
-
-    React.useEffect(() => {
         const init = async () => {
             let companyDataset = null;
-            if (!indexedViewData.id) {
-                // Query API to get environment data.
-                try {
-                    const company = await API.getSingleCompany(window.location.href.split("/")[4]);
-                    setIndexedViewData(company.response[0])
-                    companyDataset = company.response[0];
-
-                    const tickets = await API.getCompanyTickets({ companyId: companyDataset.id })
-                    setTickets(tickets.response)
-                } catch (error) {
-
+            try {
+                const res = await API.getSingleSubscription(window.location.href.split("/")[4]);
+                
+                let company = {
+                    ...res.items[0],
+                    ...res.items[0].company,
+                    ...res.items[0].product,
                 }
+
+                company.id = company.companyId
+                
+                setIndexedViewData(company)
+                companyDataset = company;
+            } catch (error) {
+                console.warn(error)
             }
 
-            // statistics = await API.getChatMessages
+            const lst = await SUBS.listSubscriptionModels()
+            setProducts(lst.items)
         }
         init();
-    }, [indexedViewData])
+    }, [])
 
     React.useEffect(() => {
-        setIsLoading(data.length === 0 || chatData.length === 0)
+        setIsLoading(chatData.length === 0 || !isLoading)
         if (!isLoaded) {
-            setIsLoaded(!(data.length === 0 || chatData.length === 0));
+            setIsLoaded(chatData.length === 0);
         }
-    }, [data, chatData])
+    }, [])
 
     React.useEffect(()=>{},[preview])
-    console.log(indexedViewData)
+
     return (
         <React.Fragment>
             {isLoading && !isLoaded && <LoadingOverlay />}
@@ -172,8 +111,7 @@ function CompanySubscriptionsView() {
                         setTab={setTimeSeriesTab}
                     />
                 </div>}
-                searchSpace={data}
-                addons={<WidgetCompanyMetrics item={indexedViewData} timeseriesIndex={timeSeriesTab} metrics={tabMetrics} />}
+                addons={<WidgetCompanyMetrics item={indexedViewData} timeseriesIndex={timeSeriesTab} />}
             >
                 <div className='col-4x4'>
                     <div style={{ width: "86%", borderBottom: `10px solid ${indexedViewData.hexColours||"white"}` }} className='widget col-1x4'>
@@ -189,10 +127,10 @@ function CompanySubscriptionsView() {
                                             }}
                                         />
                                     </div>
-                                    <p style={{ width: "70%" }} className='metric'>14 employees</p>
+                                    <p style={{ width: "70%" }} className='metric'>{(indexedViewData.companySizeEstimate||"Unknown ").replaceAll(' ','')} employees</p>
                                 </div>
                                 <div className='group heading'>
-                                    <h3>Company Profile</h3>
+                                    <h3>Company Subscription</h3>
                                 </div>
 
                                 <div className='info-wrapper'>
@@ -223,20 +161,24 @@ function CompanySubscriptionsView() {
                                     </div>
                                 </div>
                                 <div className='information heading'>
+                                    <label>Customer Nr.</label>
+                                    <h3 className='category-item'>{`CR-${indexedViewData.id+10000}`}</h3>
+                                </div>
+                                <div className='information heading'>
                                     <label>Website</label>
                                     <h3 className='category-item'><a target='_blank' href={indexedViewData.websiteUrl}>{indexedViewData.websiteUrl}</a></h3>
                                 </div>
                                 <div className='information heading'>
-                                    <label>Default Category</label>
-                                    <h3 className='category-item'>{indexedViewData.categoryDefault}</h3>
+                                    <label>Subscription</label>
+                                    <h3 className='category-item'>{indexedViewData.name||"No Subscription"}</h3>
                                 </div>
                                 <div className='information heading'>
-                                    <label>Date Created</label>
-                                    <h3 className='category-item'>{indexedViewData.createdDate}</h3>
+                                    <label>Subscription Started</label>
+                                    <h3 className='category-item'>{formattedDate(indexedViewData.startDate ? new Date(indexedViewData.startDate) : new Date())}</h3>
                                 </div>
                                 <div className='information heading'>
-                                    <label>Contact Number</label>
-                                    <h3 className='category-item'>{indexedViewData.phone || "+(___) ___ ___ ___"}</h3>
+                                    <label>Subscription Ending</label>
+                                    <h3 className='category-item'>{formattedDate(indexedViewData.endDate ? new Date(indexedViewData.endDate) : new Date())}</h3>
                                 </div>
                             </div>
                         </div>
@@ -244,13 +186,53 @@ function CompanySubscriptionsView() {
                 </div>
 
                 <div className='col-4x4'>
-                    <div className='widget col-4x4'>
-                        <div className='group heading'>
-                            <h3>Subscriptions</h3>
+                    <div className='widget special-box-view'>
+                        <div className='group heading status-tool-bar'>
+                            <h3>Subscription Details: {indexedViewData.name||"No Subscription"}</h3>
+                            <div className={`${indexedViewData.product ? 'active' : 'inactive'}-subscription`}>
+                                <div className={"inner-control"}></div>
+                            </div>
                         </div>
-                        <div className='list block'>
-                            
+                        <div className='col-3x3 list block'>
+                            {indexedViewData.product && <React.Fragment>
+                                <div className='widget col-1x3'>
+                                    <div className={"subscription-widget"}>
+                                        <h4>${indexedViewData.currentPrice}</h4>
+                                        <h5>Revenue per month</h5>
+                                    </div>
+                                </div>
+                                <div className='widget col-1x3'>
+                                    <div className={"subscription-widget"}>
+                                        <h4>{indexedViewData.currentPrice === 0 ? 0 : Math.floor(Math.abs(((indexedViewData.currentPrice-(indexedViewData.currentCost||0)) / (indexedViewData.currentPrice)) * 100))}%</h4>
+                                        <h5>Margin</h5>
+                                    </div>
+                                </div>
+                                <div className='widget col-1x3'>
+                                    <div className={"subscription-widget"}>
+                                        <h4>${(indexedViewData.currentCost||0)}</h4>
+                                        <h5>Cost per month</h5>
+                                    </div>
+                                </div>
+                                </React.Fragment>}
+                            {!indexedViewData.product && <React.Fragment>
+                                {products && products.length > 0 && products.map((e,idx)=><div key={idx} className='widget col-1x3 large-button'>
+                                    <div className={"subscription-widget"}>
+                                        <h4>{e.name}</h4>
+                                        <h4>${e.currentPrice}</h4>
+                                        <h5>Add Subscription</h5>
+                                    </div>
+                                </div>)}
+                                </React.Fragment>}
                         </div>
+                        <p className='info-message-wrapper'>
+                            {indexedViewData && indexedViewData.product && indexedViewData.product.description||"This company does not have any subscriptions associated with it at the moment!"}
+                        </p>
+                        {indexedViewData.product && <p className='info-message-wrapper'>
+                            Prepaid, billed <strong>per month</strong>, next billing date is {formattedDate(indexedViewData.startDate ? new Date(indexedViewData.startDate) : new Date())}.
+                            <br/>
+                            <br/>
+                            Started on {formattedDate(indexedViewData.startDate ? new Date(indexedViewData.startDate) : new Date())} | Renews on {formattedDate(indexedViewData.startDate ? new Date(indexedViewData.startDate) : new Date())}.
+                        </p>}
                     </div>
                 </div>
             </PageContainer>

@@ -20,6 +20,8 @@ function SubscriptionListView({item, pageBreak}) {
         handleNavigate(`/company/${item.id}`)
     }
 
+    React.useEffect(()=>{},[item])
+
     return (
         <React.Fragment>
             <div onClick={()=>handleCompanyPreview(item)} className={`widget col-1x3 ${pageBreak}`}>

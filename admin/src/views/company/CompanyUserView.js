@@ -10,78 +10,36 @@ import Tab from '../../components/Tab';
 import { AppContext } from '../../context/AppProvider';
 import WidgetCompanyMetrics from '../../components/metrics/widgets/WidgetCompanyMetrics';
 import StatusWidget from '../../components/generic/StatusWidget';
-import Button from '../../components/Button';
 import CompanyProfileEditorPopup from '../popups/CompanyProfileEditorPopup';
-import { queryCurrentDayOfWeek, queryOnlineStatus } from '../../utilities/helpers';
+import { formattedDate, queryCurrentDayOfWeek, queryOnlineStatus } from '../../utilities/helpers';
 import { useNavigate } from 'react-router-dom';
+import Users from '../../controllers/user.controller';
+import Button from '../../components/Button';
 
 function CompanyUserView() {
     const { indexedViewData, setIndexedViewData } = React.useContext(AppContext);
     const [isLoading, setIsLoading] = React.useState(true)
     const [API] = React.useState(new QuerySets())
-    const [unfilteredData, setUnfilteredData] = React.useState([])
-    const [data, setData] = React.useState([])
-    const [tickets, setTickets] = React.useState([])
+    const [USERS] = React.useState(new Users())
+    const [companyUsers, setCompanyUsers] = React.useState([])
     const [chatData, setChatData] = React.useState([])
     const [preview, setPreview] = React.useState(null)
+    const [userPreview, setUserPreview] = React.useState(null)
     const [searchPhrase, setSearchPhrase] = React.useState("")
     const [tab, setTab] = React.useState(0)
     const [menuTab, setMenuTab] = React.useState(0)
     const [timeSeriesTab, setTimeSeriesTab] = React.useState(0)
     const [isLoaded, setIsLoaded] = React.useState(false);
-    const [tabMetrics, setTabMetrics] = React.useState({});
 
     const navigate = useNavigate();
     const handleNavigate = (uri) => navigate(uri);
 
     const hidePreview = () => setPreview(null)
-
-    let searchResults = searchPhrase.length < 2 ? [] : data.filter((e) => {
-        const keywords = searchPhrase.split(' ');
-        const itemText = `${e.searchName} ${e.searchCategory}`.toLowerCase();
-
-        return keywords.every((word) => itemText.includes(word.toLowerCase()));
-    });
-
-    if (searchResults.length === 0) searchResults = data;
-
-    const handleDelete = () => {
-        if (window.confirm("This will remove the company from the system completely! Would you like to proceed?")) {
-            API.deleteModel({model: "company", id: indexedViewData.id}).then((res)=>{
-                if (res.response === "deleted") {
-                    handleNavigate("/dashboard")
-                }
-            })
-        }
-    }
+    const hideUserPreview = () => setUserPreview(null)
 
     React.useEffect(() => {
         const init = async () => {
             try {
-
-                const companies = await API.getAllCompanies()
-                companies.items.forEach((e) => {
-                    e.searchName = e.businessName;
-                    e.searchCategory = e.categoryDefault;
-                    e.searchImage = e.logoUrl;
-                });
-                setUnfilteredData(companies.items)
-                setData(companies.items.filter((a) => {
-                    return a.verified === true;
-                }))
-
-                setTabMetrics({
-                    verified: companies.items.filter((a) => {
-                        return a.verified === true;
-                    }).length,
-                    unverified: companies.items.filter((a) => {
-                        return a.verified === false;
-                    }).length,
-                    requested: companies.items.filter((a) => {
-                        return a.requested === false;
-                    }).length
-                })
-
                 const chats = await API.getAllChatStatistics()
                 chats.items.forEach((e) => {
                     e.searchName = e.businessName;
@@ -89,6 +47,7 @@ function CompanyUserView() {
                     e.searchImage = e.logoUrl;
                 });
                 setChatData(chats.items)
+                setIsLoaded(true)
             } catch (ex) {
                 console.warn(ex)
             }
@@ -98,55 +57,38 @@ function CompanyUserView() {
     }, [API])
 
     React.useEffect(() => {
-        if (tab === 0) {
-            const dataset = unfilteredData.filter((a) => {
-                return a.verified === true;
-            })
-
-            setData(dataset)
-        } else if (tab === 1) {
-            const dataset = unfilteredData.filter((a) => {
-                return a.verified === false;
-            })
-
-            setData(dataset)
-        } else if (tab === 2) {
-            const dataset = unfilteredData.filter((a) => {
-                return a.unsubscribed === true;
-            })
-
-            setData(dataset)
-        }
-    }, [tab])
-
-    React.useEffect(() => {
         const init = async () => {
             let companyDataset = null;
-            if (!indexedViewData.id) {
-                // Query API to get environment data.
-                try {
-                    const company = await API.getSingleCompany(window.location.href.split("/")[4]);
-                    setIndexedViewData(company.response[0])
-                    companyDataset = company.response[0];
-
-                    const tickets = await API.getCompanyTickets({ companyId: companyDataset.id })
-                    setTickets(tickets.response)
-                } catch (error) {
-
+            try {
+                const companyId = window.location.href.split("/")[4]
+                const res = await API.getSingleSubscription(companyId);
+                const users = await USERS.listCompanyUsers({ companyId: companyId })
+                let company = {
+                    ...res.items[0],
+                    ...res.items[0].company,
+                    ...res.items[0].product,
                 }
+
+                company.id = company.companyId
+
+                setIndexedViewData(company)
+                setCompanyUsers(users.items)
+                companyDataset = company;
+            } catch (error) {
+                console.warn(error)
             }
         }
         init();
-    }, [indexedViewData])
+    }, [])
 
     React.useEffect(() => {
-        setIsLoading(data.length === 0 || chatData.length === 0)
+        setIsLoading(chatData.length === 0 || !isLoading)
         if (!isLoaded) {
-            setIsLoaded(!(data.length === 0 || chatData.length === 0));
+            setIsLoaded(chatData.length === 0);
         }
-    }, [data, chatData])
+    }, [])
 
-    React.useEffect(()=>{},[preview])
+    React.useEffect(() => { }, [preview])
 
     return (
         <React.Fragment>
@@ -154,7 +96,7 @@ function CompanyUserView() {
             <TopMenuBar setTab={setMenuTab} />
 
             <PageContainer
-                pageTitle={indexedViewData.businessName || "Loading.."}
+                pageTitle={indexedViewData.businessName || "No Company Found"}
                 pageSubtitle={<div className='col-1x3 tab-wrapper time-series-tabs'>
                     <Tab tabs={[
                         {
@@ -170,11 +112,10 @@ function CompanyUserView() {
                         setTab={setTimeSeriesTab}
                     />
                 </div>}
-                searchSpace={data}
-                addons={<WidgetCompanyMetrics item={indexedViewData} timeseriesIndex={timeSeriesTab} metrics={tabMetrics} />}
+                addons={<WidgetCompanyMetrics item={indexedViewData} timeseriesIndex={timeSeriesTab} />}
             >
                 <div className='col-4x4'>
-                    <div style={{ width: "86%", borderBottom: `10px solid ${indexedViewData.hexColours||"white"}` }} className='widget col-1x4'>
+                    <div style={{ width: "86%", borderBottom: `10px solid ${indexedViewData.hexColours || "white"}` }} className='widget col-1x4'>
                         <div className='col-2x2'>
                             <div className='widget col-1x2'>
                                 <div className='col-2x2 metric-wrapper flex-box end-to-end'>
@@ -187,10 +128,10 @@ function CompanyUserView() {
                                             }}
                                         />
                                     </div>
-                                    <p style={{ width: "70%" }} className='metric'>14 employees</p>
+                                    <p style={{ width: "70%" }} className='metric'>{(indexedViewData.companySizeEstimate||"Unknown ").replaceAll(' ','')} employees</p>
                                 </div>
                                 <div className='group heading'>
-                                    <h3>Company Profile</h3>
+                                    <h3>Company Users</h3>
                                 </div>
 
                                 <div className='info-wrapper'>
@@ -211,7 +152,7 @@ function CompanyUserView() {
                                     )}
                                 </div>
                                 <div className='information heading'>
-                                    <StatusWidget text={queryOnlineStatus({company: indexedViewData}) ? "ONLINE" : "OFFLINE"} status={queryOnlineStatus({company: indexedViewData}) ? "new" : "pending"} />
+                                    <StatusWidget text={queryOnlineStatus({ company: indexedViewData }) ? "ONLINE" : "OFFLINE"} status={queryOnlineStatus({ company: indexedViewData }) ? "new" : "pending"} />
                                     <div className='business-hours-grid'>
                                         <div className='heading'>
                                             <h4>{queryCurrentDayOfWeek()}</h4>
@@ -221,20 +162,24 @@ function CompanyUserView() {
                                     </div>
                                 </div>
                                 <div className='information heading'>
+                                    <label>Customer Nr.</label>
+                                    <h3 className='category-item'>{`CR-${indexedViewData.id + 10000}`}</h3>
+                                </div>
+                                <div className='information heading'>
                                     <label>Website</label>
                                     <h3 className='category-item'><a target='_blank' href={indexedViewData.websiteUrl}>{indexedViewData.websiteUrl}</a></h3>
                                 </div>
                                 <div className='information heading'>
-                                    <label>Default Category</label>
-                                    <h3 className='category-item'>{indexedViewData.categoryDefault}</h3>
+                                    <label>Subscription</label>
+                                    <h3 className='category-item'>{indexedViewData.name}</h3>
                                 </div>
                                 <div className='information heading'>
-                                    <label>Date Created</label>
-                                    <h3 className='category-item'>{indexedViewData.createdDate}</h3>
+                                    <label>Subscription Started</label>
+                                    <h3 className='category-item'>{formattedDate(indexedViewData.startDate ? new Date(indexedViewData.startDate) : new Date())}</h3>
                                 </div>
                                 <div className='information heading'>
-                                    <label>Contact Number</label>
-                                    <h3 className='category-item'>{indexedViewData.phone || "+(___) ___ ___ ___"}</h3>
+                                    <label>Subscription Ending</label>
+                                    <h3 className='category-item'>{formattedDate(indexedViewData.endDate ? new Date(indexedViewData.endDate) : new Date())}</h3>
                                 </div>
                             </div>
                         </div>
@@ -242,17 +187,76 @@ function CompanyUserView() {
                 </div>
 
                 <div className='col-4x4'>
-                    <div className='widget col-1x4'>
-                        <div className='group heading'>
-                            <h3>Users</h3>
+                    <div className='widget special-box-view'>
+                        <div className='group heading status-tool-bar'>
+                            <h3>Users: {indexedViewData.name || "No Matching Subscription"}</h3>
+                            <div className={"active-subscription"}>
+                                <div className={"inner-control"}></div>
+                            </div>
                         </div>
-                        <div className='list block'>
-                            <Button onClick={()=>setPreview({item:indexedViewData, type:"edit"})} special={"icon-button"} icon={<span class="material-symbols-outlined">edit</span>} title="Edit Profile" />
+                        <div className='col-3x3 list block'>
+                            <div className='widget col-1x3'>
+                                <div className={"subscription-widget"}>
+                                    <h4>{indexedViewData.maxAdmins||0}</h4>
+                                    <h5>Maximum Admin Users</h5>
+                                </div>
+                            </div>
+                            <div className='widget col-1x3'>
+                                <div className={"subscription-widget"}>
+                                    <h4>{indexedViewData.maxAgents||0}</h4>
+                                    <h5>Maximum Agents</h5>
+                                </div>
+                            </div>
+                            <div className='widget col-1x3'>
+                                <div className={"subscription-widget"}>
+                                    <h4>{(companyUsers && companyUsers.length || 0)||0}</h4>
+                                    <h5>All Users</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='widget full-width'>
+                            <div className='widget col-2x2'>
+                                <div style={{ width: "100%" }} className='col-1x2'>
+                                    <div style={{ width: "80%" }} className='col-1x4 mini-toolbar'>
+                                        <div className="col-2x2">
+                                            <div className='col-1x2'>
+                                                <h4>Active Users</h4>
+                                            </div>
+                                            <div className='col-1x2'>
+                                                <Button onClick={()=>setUserPreview({type:"new-user", item: {}})} title="Add User" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <br/>
+                                    <table className="classic-table">
+                                        <thead>
+                                            <tr>
+                                                <td style={{ width: 150 }}><div title="Number of positive messages received from the user." className="hint"><center>@Country</center></div></td>
+                                                <td>User Name</td>
+                                                <td>Phone</td>
+                                                <td>Role</td>
+                                                <td>Email</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {companyUsers && companyUsers.length > 0 && companyUsers.map((e, idx) => <tr key={idx}>
+                                            <td><div className='numeric-graphic good'>{e.country}</div></td>
+                                            <td style={{ width: 150 }}>{e.name} {e.surname}</td>
+                                            <td>{e.phoneNumber}</td>
+                                            <td><div style={{ width: "auto", background: "gray" }} className="hint"><center>{e.accessGroup.toString().toUpperCase()}</center></div></td>
+                                            <td><div style={{ width: "auto", background: "gray" }} className="hint"><center>{e.email}</center></div></td>
+                                        </tr>)}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </PageContainer>
             {preview && <CompanyProfileEditorPopup handleClose={hidePreview} popupType={preview.type} item={preview.item} />}
+            {userPreview && <CompanyProfileEditorPopup handleClose={hideUserPreview} popupType={userPreview.type} item={userPreview.item} />}
         </React.Fragment>
     )
 }

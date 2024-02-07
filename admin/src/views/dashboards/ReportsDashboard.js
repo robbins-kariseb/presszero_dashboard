@@ -5,13 +5,11 @@ import LoadingOverlay from '../../components/overlays/LoadingOverlay';
 import TopMenuBar from '../../components/generic/TopMenuBar';
 import WidgetPlatformMetrics from '../../components/metrics/widgets/WidgetPlatformMetrics';
 
-import CompanyGridView from '../../components/generic/CompanyGridView';
-import SearchBar from '../../components/generic/SearchBar';
-import Button from '../../components/Button';
 import Tab from '../../components/Tab';
-import ListView from '../../components/generic/ListView';
 import NewCompanyForm from '.././forms/NewCompanyForm';
 import { AppContext } from '../../context/AppProvider';
+import SpecifiedDomainRadarChart from '../charts/SpecifiedDomainRadarChart';
+import GenericBarChart from '../charts/GenericBarChart';
 
 
 const ReportsDashboard = () => {
@@ -145,51 +143,23 @@ const ReportsDashboard = () => {
                 addons={<WidgetPlatformMetrics timeseriesIndex={timeSeriesTab} metrics={tabMetrics} />}
             >
                 <div className='col-4x4'>
-                    <div className='widget-container db-v-2 col-3x4'>
-                        <div className='tool-bar col-3x3'>
-                            <div className='col-1x3 widget-tabs'>
-                                <div className='flex widget-menu'>
-                                    <div className='heading' style={{width: 100, position: "relative", top: 20}}>
-                                        <h4>Companies</h4>
-                                    </div>
-                                    <Tab 
-                                        setTab={setTab}
-                                        tabs={[
-                                            {
-                                                title:`Verified (${tabMetrics.verified||0})`,
-                                                onClick:()=>{}
-                                            },{
-                                                title:`Unsubscribed (${tabMetrics.unverified||0})`,
-                                                onClick:()=>{}
-                                            },{
-                                                title:`Requested (${tabMetrics.requested||0})`,
-                                                onClick:()=>{}
-                                        },]} 
-                                    />
-                                </div>
+                    <div style={{width: "100%"}} className='widget-container db-v-2 col-3x4'>
+                        <div className='report-heading'>
+                            <h4>Press Zero Campaign Overview</h4>
+                        </div>
+                        <div className='col-2x2 chart-container'>
+                            <div className='col-1x2 chart-wrapper'>
+                                <SpecifiedDomainRadarChart heading={"Distribution of Subscribed Companies"} />
                             </div>
-                            <div className='col-1x3 widget-search'>
-                                <SearchBar placeholder={"Search for Companies here..."} searchPhrase={searchPhrase} onChange={setSearchPhrase} />
-                            </div>
-                            <div className='col-1x3 widget-actions'>
-                                <Button onClick={()=>setPreview({item:{}, type:"new"})} additionalClasses={'special'} title={`Add Company`} />
+                            <div className='col-1x2 chart-wrapper'>
+                                <SpecifiedDomainRadarChart heading={"High Volume Categories"} />
                             </div>
                         </div>
-                        {searchResults.sort((a,b)=>(a.verified ? 1 : 0) - (b.verified ? 1 : 0)).reverse().map((e,idx)=>{
-                            return <CompanyGridView pageBreak={`${(idx + 1) % 3 === 2 ? 'last-in-row' : ''}`} item={e} key={idx} />
-                        })}
-                    </div>
-                    <div className='widget-container db-v-2 col-1x4'>
-                    <div className='tool-bar col-3x3'>
-                            <div className='col-1x3' style={{width: "100%"}}>
-                                <div className='flex'>
-                                    <div className='heading' style={{paddingTop: 20}}>
-                                        <h4>Zendesk Requests</h4>
-                                    </div>
-                                </div>
+                        <div className='col-2x2 chart-container'>
+                            <div style={{width: "100%"}} className='col-1x2 chart-wrapper'>
+                                <GenericBarChart heading={"Subscriptions by Month"} />
                             </div>
                         </div>
-                        {[1,2,3,4,5,6,7].map((e,idx)=><ListView key={idx} item={{title: `Zendesk Request Item ${e+134}`, subtitle: "Nustream"}} />)}
                     </div>
                 </div>
             </PageContainer>

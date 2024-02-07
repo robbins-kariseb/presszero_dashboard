@@ -29,6 +29,93 @@ export default class QuerySets {
             return []
         });
     }
+
+    getZendeskIntegrations = async () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/admin/zendesk/list/all`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
+    getActiveUsers = async () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/admin/active/users`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
+    getRequestedCompanies = async () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/admin/requested/companies`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
+    getSingleSubscription = async (id) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "companyId": id
+          });
+          
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+          
+
+        return await fetch(`${API_REFERENCE}api/press/zero/admin/single/subscription/model`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
     getCompanyStatistics = async () => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
@@ -72,6 +159,31 @@ export default class QuerySets {
         };
 
         return await fetch(`${API_REFERENCE}api/press/zero/models/${model}`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
+    getCompanyTicketsAndChats = async ({companyId}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+        "companyId": companyId
+        });
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/admin/list/company/tickets`, requestOptions)
         .then(response => response.text())
         .then(result => JSON.parse(result))
         .catch(error => {
@@ -133,6 +245,10 @@ export default class QuerySets {
     }
 
     createModel = async ({model, object}) => {
+
+        if (model === "subscription")
+            return this.createSubscription({model, object})
+
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
         myHeaders.append("Content-Type", "application/json");
@@ -147,6 +263,29 @@ export default class QuerySets {
         };
 
         return await fetch(`${API_REFERENCE}api/press/zero/models/${model}`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
+    createSubscription = async ({model, object}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify(object);
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/admin/create/subscription`, requestOptions)
         .then(response => response.text())
         .then(result => JSON.parse(result))
         .catch(error => {

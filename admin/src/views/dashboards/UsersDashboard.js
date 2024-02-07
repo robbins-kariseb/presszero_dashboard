@@ -22,6 +22,7 @@ const UsersDashboard = () => {
     const [data,setData] = React.useState([])
     const [chatData,setChatData] = React.useState([])
     const [bussinesses,setBusinesses] = React.useState([])
+    const [activeUserList,setActiveUserList] = React.useState([])
     const [preview, setPreview] = React.useState(null)
     const [searchPhrase, setSearchPhrase] = React.useState("")
     const [tab, setTab] = React.useState(0)
@@ -44,6 +45,7 @@ const UsersDashboard = () => {
     React.useEffect(()=>{
         const init = async ()=>{
             const dataset = await API.getCompanyStatistics()
+            const users = await API.getActiveUsers()
     
             try {
                 setBusinesses(dataset.items.sort((a,b)=> {
@@ -56,6 +58,8 @@ const UsersDashboard = () => {
                     e.searchCategory = e.categoryDefault;
                     e.searchImage = e.logoUrl;
                 });
+
+                setActiveUserList(users.items)
                 setUnfilteredData(companies.items)
                 setData(companies.items.filter((a)=>{
                     return a.verified === true;
@@ -184,12 +188,12 @@ const UsersDashboard = () => {
                             <div className='col-1x3' style={{width: "100%"}}>
                                 <div className='flex'>
                                     <div className='heading' style={{paddingTop: 20}}>
-                                        <h4>Zendesk Requests</h4>
+                                        <h4>Active Users</h4>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        {[1,2,3,4,5,6,7].map((e,idx)=><ListView key={idx} item={{title: `Zendesk Request Item ${e+134}`, subtitle: "Nustream"}} />)}
+                        {activeUserList.map((e,idx)=><ListView key={idx} item={{title: `${e.name} ${e.surname}`, logoUrl: e.imageUrl, subtitle: e.businessName}} />)}
                     </div>
                 </div>
             </PageContainer>

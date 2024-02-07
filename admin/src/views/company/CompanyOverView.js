@@ -14,9 +14,10 @@ import Button from '../../components/Button';
 import CompanyProfileEditorPopup from '../popups/CompanyProfileEditorPopup';
 import { queryCurrentDayOfWeek, queryOnlineStatus } from '../../utilities/helpers';
 import { useNavigate } from 'react-router-dom';
+import BusinessImage from '../../components/generic/BusinessImage';
 
 function CompanyOverView() {
-    const { indexedViewData, setIndexedViewData } = React.useContext(AppContext);
+    const { indexedViewData, setIndexedViewData, handleAlert } = React.useContext(AppContext);
     const [isLoading, setIsLoading] = React.useState(true)
     const [API] = React.useState(new QuerySets())
     const [unfilteredData, setUnfilteredData] = React.useState([])
@@ -50,6 +51,8 @@ function CompanyOverView() {
             API.deleteModel({model: "company", id: indexedViewData.id}).then((res)=>{
                 if (res.response === "deleted") {
                     handleNavigate("/dashboard")
+                } else {
+                    handleAlert("We could not delete this object! Please try again.")
                 }
             })
         }
@@ -90,7 +93,7 @@ function CompanyOverView() {
                 });
                 setChatData(chats.items)
             } catch (ex) {
-                console.warn(ex)
+                handleAlert("A network related error has occurred while getting data for this company!")
             }
         }
 
@@ -122,8 +125,8 @@ function CompanyOverView() {
     React.useEffect(() => {
         const init = async () => {
             let companyDataset = null;
-            if (!indexedViewData.id) {
-                // Query API to get environment data.
+            // Query API to get environment data.
+            if (indexedViewData.companyDefaultCategory === undefined){
                 try {
                     const company = await API.getSingleCompany(window.location.href.split("/")[4]);
                     setIndexedViewData(company.response[0])
@@ -132,14 +135,12 @@ function CompanyOverView() {
                     const tickets = await API.getCompanyTickets({ companyId: companyDataset.id })
                     setTickets(tickets.response)
                 } catch (error) {
-
+                    handleAlert("A network related error has occurred while getting data for this company!")
                 }
             }
-
-            // statistics = await API.getChatMessages
         }
         init();
-    }, [indexedViewData])
+    }, [])
 
     React.useEffect(() => {
         setIsLoading(data.length === 0 || chatData.length === 0)
@@ -180,16 +181,8 @@ function CompanyOverView() {
                         <div className='col-2x2'>
                             <div className='widget col-1x2'>
                                 <div className='col-2x2 metric-wrapper flex-box end-to-end'>
-                                    <div className='logo-wrapper metric'>
-                                        <img
-                                            src={indexedViewData.logoUrl}
-                                            alt="logo"
-                                            onError={(e) => {
-                                                e.target.src = logo;
-                                            }}
-                                        />
-                                    </div>
-                                    <p style={{ width: "70%" }} className='metric'>14 employees</p>
+                                    <BusinessImage item={indexedViewData} />
+                                    <p style={{ width: "70%" }} className='metric'>{(indexedViewData.companySizeEstimate||"Unknown ").replaceAll(' ','')} employees</p>
                                 </div>
                                 <div className='group heading'>
                                     <h3>Company Profile</h3>
@@ -223,6 +216,10 @@ function CompanyOverView() {
                                     </div>
                                 </div>
                                 <div className='information heading'>
+                                    <label>Customer Nr.</label>
+                                    <h3 className='category-item'>{`CR-${indexedViewData.id+10000}`}</h3>
+                                </div>
+                                <div className='information heading'>
                                     <label>Website</label>
                                     <h3 className='category-item'><a target='_blank' href={indexedViewData.websiteUrl}>{indexedViewData.websiteUrl}</a></h3>
                                 </div>
@@ -249,8 +246,8 @@ function CompanyOverView() {
                             <h3>Company Management</h3>
                         </div>
                         <div className='list block'>
-                            {!indexedViewData.verified && <Button special={"icon-button"} icon={<span class="material-symbols-outlined">verified</span>} title="Verify Company" />}
-                            {indexedViewData.verified && <Button special={"icon-button"} icon={<span class="material-symbols-outlined">verified</span>} title="Unverify Company" />}
+                            {!indexedViewData.verified && <Button onClick={()=>setPreview({item:indexedViewData, type:"verify"})}  special={"icon-button"} icon={<span class="material-symbols-outlined">verified</span>} title="Verify Company" />}
+                            {indexedViewData.verified && <Button onClick={()=>setPreview({item:indexedViewData, type:"unverify"})} special={"icon-button"} icon={<span class="material-symbols-outlined">verified</span>} title="Unverify Company" />}
 
                             <Button onClick={handleDelete} special={"icon-button"} icon={<span class="material-symbols-outlined">delete</span>} title="Remove Company" />
                             <Button special={"icon-button"} icon={<span class="material-symbols-outlined">add</span>}  title="Add Category" />

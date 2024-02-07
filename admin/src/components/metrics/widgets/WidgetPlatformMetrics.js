@@ -20,6 +20,7 @@ function WidgetPlatformMetrics({item, timeseriesIndex}) {
                 });
 
                 const metrics = await API.getSubscriptions()
+                const requested = timeseriesExtract({dataset: await API.getRequestedCompanies(), key: "items"})
 
                 const subscriptions = timeseriesExtract({dataset: {items: metrics.items.map((e)=>{
                     return {
@@ -53,9 +54,7 @@ function WidgetPlatformMetrics({item, timeseriesIndex}) {
                 }).length - companies.timeseriesMonth.filter((a)=>{
                     return a.verified === false;
                 }).length,
-                requested: companies.items.filter((a)=>{
-                    return a.requested === false;
-                }).length})
+                requested: requested.items.length})
 
 
 
@@ -66,7 +65,7 @@ function WidgetPlatformMetrics({item, timeseriesIndex}) {
                 unverified: companies.timeseriesDay.filter((a)=>{
                     return a.verified === false;
                 }).length,
-                requested: companies.timeseriesDay.filter((a)=>{
+                requested: requested.timeseriesDay.filter((a)=>{
                     return a.requested === false;
                 }).length})
 
@@ -78,7 +77,7 @@ function WidgetPlatformMetrics({item, timeseriesIndex}) {
                 unverified: companies.timeseriesMonth.filter((a)=>{
                     return a.verified === false;
                 }).length,
-                requested: companies.timeseriesMonth.filter((a)=>{
+                requested: requested.timeseriesMonth.filter((a)=>{
                     return a.requested === false;
                 }).length})
 
@@ -97,11 +96,11 @@ function WidgetPlatformMetrics({item, timeseriesIndex}) {
         <div className='widget col-5x5'>
             <div className="col-1x5 menu-statistics">
                 <div className='heading metric-heading'>
-                    <h4 className='metric-numeric top'>{indexedMetrics.verified||0}</h4>
-                    <WidgetFigure value={indexedMetrics.verifiedWF||0} />
+                    <h4 className='metric-numeric top'>{indexedMetrics.requested||0}</h4>
+                    <WidgetFigure value={indexedMetrics.requestedWF||0} />
                 </div>
                 <div className='heading metric-heading'>
-                    <h4>Active companies</h4>
+                    <h4>Requested companies</h4>
                 </div>
             </div>
             <div className="col-1x5 menu-statistics">

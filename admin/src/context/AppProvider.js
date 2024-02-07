@@ -12,6 +12,7 @@ const AppProvider = ({ children }) => {
   const [USERS] = React.useState(new Users())
   const [userData,setUserData] = React.useState(null)
   const [notification,setNotification] = React.useState("")
+  const [warning,setWarning] = React.useState("")
   const [routeControl, setRoutControl] = useState({
     page: "/",
     indexItem: null,
@@ -36,14 +37,24 @@ const AppProvider = ({ children }) => {
 
     const interval = setTimeout(() => {
       setNotification("")
-    }, 5000);
+      return ()=> clearInterval(interval)
+    }, 10000);
+  }
+
+  const handleWarning = (message) => {
+    setWarning(message)
+
+    const interval = setTimeout(() => {
+      setWarning("")
+      return ()=> clearInterval(interval)
+    }, 10000);
   }
 
   const handleUserSignIn = async ({username, password, verification}) => {
     if (verification === undefined) {
       // Handle password Sign In
       const user = await USERS.signIn({password,username})
-      if (user.response === "successful" && user.userData && user.userData.accessGroup === "super-user") {
+      if (user.response === "successful" && user.userData && (user.userData.accessGroup === "super-user" || user.userData.accessGroup === "ghost-user")) {
         localStorage.setItem('user_data', JSON.stringify(user))
         return true;
       } else {
@@ -83,6 +94,8 @@ const AppProvider = ({ children }) => {
         notification,
         handleAlert,
         userData,
+        handleWarning,
+        warning,
       }}
     >
       {children}

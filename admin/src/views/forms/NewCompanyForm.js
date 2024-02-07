@@ -3,12 +3,12 @@ import QuerySets from '../../controllers/dashboard.controller';
 import 'quill/dist/quill.snow.css'
 import Quill from 'quill';
 import Button from '../../components/Button';
-import { convertTimeToUTC } from '../../utilities/helpers';
+import { convertTimeToUTC, isValidEmail } from '../../utilities/helpers';
 import { AppContext } from '../../context/AppProvider';
 let isTriggered = false
 
 function NewCompanyForm ({ item, handleClose }) {
-    const {onUniversalChange} = React.useContext(AppContext)
+    const {onUniversalChange, handleWarning, handleAlert} = React.useContext(AppContext)
     const [API] = React.useState(new QuerySets())
     const popupRef = React.useRef(null);
     const [transform, setTransform] = React.useState("translateX(100%)")
@@ -27,6 +27,7 @@ function NewCompanyForm ({ item, handleClose }) {
     const [hexColours, setHexColours] = React.useState("")
     const [rgbColours, setRgbColours] = React.useState("")
     const [contactNumber, setContactNumber] = React.useState("")
+    const [isUploadingLogo, setIsUploadingLogo] = React.useState(false)
 
     const setColors = (hex) => {
         // Function to convert HEX to RGB
@@ -62,7 +63,7 @@ function NewCompanyForm ({ item, handleClose }) {
     
         // Check if the selected file is an image
         if (!file.type.startsWith('image/')) {
-          alert('Please select an image file.');
+            handleWarning('Please select an image file.');
           return;
         }
     
@@ -73,21 +74,43 @@ function NewCompanyForm ({ item, handleClose }) {
         img.onload = () => {
           // Check if the image dimensions are 256x256 or 512x512
           if (img.width === 256 && img.height === 256 || img.width === 512 && img.height === 512) {
+            setIsUploadingLogo(true)
             // Convert the image to a base64 string with dataURL
             const reader = new FileReader();
             reader.onloadend = () => {
                 API.uploadFile({base64: reader.result}).then((res)=>{
                     setLogoUrl(res.fileUri)
+                    setIsUploadingLogo(false)
+                    handleAlert('The company Logo has been attached successfully!');
                 })
             };
             reader.readAsDataURL(file);
           } else {
-            alert('Please select an image with dimensions 256x256 or 512x512.');
+            handleWarning('Please select an image with dimensions 256x256 or 512x512.');
           }
         };
     };
 
     const onSaveChanges = async () => {
+        if (logoUrl.length === 0) {
+            handleWarning("You need to upload the company logo with the following dimensions in order to continue! Minimum Requirement: 256x256 or 512x512.")
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            handleWarning("Please enter a valid email!")
+            return;
+        }
+
+        if (businessHoursStart.length === 0 || businessHoursEnd.length === 0) {
+            handleWarning("Please ensure that the business hours are valid!")
+            return;
+        }
+
+        if (description.length === 0 || businessName.length === 0) {
+            handleWarning("Please ensure that the company description and business name are filled out!")
+            return;
+        }
         item.email = email
         item.phone = phone
         item.businessHoursStart = businessHoursStart
@@ -204,6 +227,14 @@ function NewCompanyForm ({ item, handleClose }) {
                             <div className='col-2x2 flex'>
                                 <div className='col-1x2'>
                                     <div className='form-control'>
+                                        <label>Business Logo</label>
+                                        <input type="file" accept="image/*" onChange={handleFileChange} />
+                                        <div className='image-display-wrapper'>
+                                            {logoUrl && <img src={logoUrl} alt="Logo Preview" />}
+                                            {isUploadingLogo && <img style={{width: 30}} src={"https://media.tenor.com/t5DMW5PI8mgAAAAi/loading-green-loading.gif"} alt="Logo Preview" />}
+                                        </div>
+                                    </div>
+                                    <div className='form-control'>
                                         <label>Business Name</label>
                                         <input type={"text"} onChange={(e)=>setBusinessName(e.target.value)} value={businessName} />
                                     </div>
@@ -218,11 +249,6 @@ function NewCompanyForm ({ item, handleClose }) {
                                     <div className='form-control'>
                                         <label>Website</label>
                                         <input type={"text"} onChange={(e)=>setWebsiteUrl(e.target.value)} value={websiteUrl} />
-                                    </div>
-                                    <div className='form-control'>
-                                        <label>Business Logo</label>
-                                        <input type="file" accept="image/*" onChange={handleFileChange} />
-                                        {logoUrl && <img src={logoUrl} alt="Logo Preview" />}
                                     </div>
                                 </div>
                                 <div className='col-1x2'>

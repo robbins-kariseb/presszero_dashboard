@@ -135,11 +135,9 @@ function CompanyReportsView() {
 
                 }
             }
-
-            // statistics = await API.getChatMessages
         }
         init();
-    }, [indexedViewData])
+    }, [])
 
     React.useEffect(() => {
         setIsLoading(data.length === 0 || chatData.length === 0)
@@ -189,7 +187,7 @@ function CompanyReportsView() {
                                             }}
                                         />
                                     </div>
-                                    <p style={{ width: "70%" }} className='metric'>14 employees</p>
+                                    <p style={{ width: "70%" }} className='metric'>{(indexedViewData.companySizeEstimate||"Unknown ").replaceAll(' ','')} employees</p>
                                 </div>
                                 <div className='group heading'>
                                     <h3>Company Profile</h3>
