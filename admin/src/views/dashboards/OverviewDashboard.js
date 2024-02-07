@@ -9,9 +9,10 @@ import CompanyGridView from '../../components/generic/CompanyGridView';
 import SearchBar from '../../components/generic/SearchBar';
 import Button from '../../components/Button';
 import Tab from '../../components/Tab';
-import ListView from '../../components/generic/ListView';
 import NewCompanyForm from '.././forms/NewCompanyForm';
+import zendeskLogo from "../../images/zendesk.png"
 import { AppContext } from '../../context/AppProvider';
+import IntegrationWidget from '../../components/generic/IntegrationWidget';
 
 const OverviewDashboard = () => {
     const {universalChangeCounter, applicationTabs} = React.useContext(AppContext)
@@ -21,6 +22,8 @@ const OverviewDashboard = () => {
     const [data,setData] = React.useState([])
     const [chatData,setChatData] = React.useState([])
     const [bussinesses,setBusinesses] = React.useState([])
+    const [integrationList,setIntegrationList] = React.useState([])
+    const [requestedCompanies,setRequestedCompanies] = React.useState([])
     const [preview, setPreview] = React.useState(null)
     const [searchPhrase, setSearchPhrase] = React.useState("")
     const [tab, setTab] = React.useState(0)
@@ -43,11 +46,17 @@ const OverviewDashboard = () => {
     React.useEffect(()=>{
         const init = async ()=>{
             const dataset = await API.getCompanyStatistics()
+            const requested = await API.getRequestedCompanies()
+            const integrations = await API.getZendeskIntegrations()
     
             try {
                 setBusinesses(dataset.items.sort((a,b)=> {
                     return a.totalChats - b.totalChats
                 }).slice().reverse().slice(0, 3));
+
+                setIntegrationList(integrations.items)
+
+                setRequestedCompanies(requested.items||[])
 
                 const companies = await API.getAllCompanies()
                 companies.items.forEach((e) => {
@@ -67,9 +76,7 @@ const OverviewDashboard = () => {
                 unverified: companies.items.filter((a)=>{
                     return a.verified === false;
                 }).length,
-                requested: companies.items.filter((a)=>{
-                    return a.requested === false;
-                }).length})
+                requested: requested.items.length})
 
                 const chats = await API.getAllChatStatistics()
                 chats.items.forEach((e) => {
@@ -100,11 +107,7 @@ const OverviewDashboard = () => {
 
             setData(dataset)
         } else if (tab === 2) {
-            const dataset = unfilteredData.filter((a)=>{
-                return a.unsubscribed === true;
-            })
-
-            setData(dataset)
+            setData(requestedCompanies.sort((a,b)=>b.requestCount - a.requestCount))
         }
     },[tab,universalChangeCounter])
 
@@ -184,12 +187,12 @@ const OverviewDashboard = () => {
                             <div className='col-1x3' style={{width: "100%"}}>
                                 <div className='flex'>
                                     <div className='heading' style={{paddingTop: 20}}>
-                                        <h4>Zendesk Requests</h4>
+                                        <h4>Zendesk Integrations</h4>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        {[1,2,3,4,5,6,7].map((e,idx)=><ListView key={idx} item={{title: `Zendesk Request Item ${e+134}`, subtitle: "Nustream"}} />)}
+                        {integrationList.map((e, idx) => <IntegrationWidget key={idx} item={e} logo={zendeskLogo} />)}
                     </div>
                 </div>
             </PageContainer>

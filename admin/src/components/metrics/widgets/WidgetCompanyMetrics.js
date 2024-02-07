@@ -18,6 +18,7 @@ function WidgetCompanyMetrics({item, timeseriesIndex}) {
     const [metricsDay, setMetricsDay] = React.useState({})
     const [preview, setPreview] = React.useState(null)
     const [hasZendesk, setHasZendesk] = React.useState(null)
+    const [hasOutlook, setHasOutlook] = React.useState(null)
 
     const hidePreview = () => setPreview(null)
 
@@ -26,61 +27,81 @@ function WidgetCompanyMetrics({item, timeseriesIndex}) {
             try {
                 let _metricsAll = {
                     totalChats: 0,
+                    totalChatsWF: 0,
                     openTickets: 0,
+                    openTicketsWF: 0,
+                    activeTicketsWF: 0,
                     activeTickets: 0
                 }
 
                 let _metricsMonth = {
                     totalChats: 0,
+                    totalChatsWF: 0,
                     openTickets: 0,
-                    activeTickets: 0
+                    openTicketsWF: 0,
+                    activeTickets: 0,
+                    activeTicketsWF: 0,
                 }
 
                 let _metricsDay = {
                     totalChats: 0,
+                    totalChatsWF: 0,
                     openTickets: 0,
-                    activeTickets: 0
+                    openTicketsWF: 0,
+                    activeTickets: 0,
+                    activeTicketsWF: 0
                 }
 
-                const tickets = timeseriesExtract({dataset:await API.getCompanyTickets({companyId: companyId}),key:"response"})
+                let metricList = []
+                const tickets = await API.getCompanyTicketsAndChats({companyId: companyId})
+
+                tickets.items.forEach((e)=>{
+                    const chatCount = e.chats.length;
+                    e.chats.forEach((m)=>{
+                        metricList.push({
+                            ...e,
+                            ...m
+                        })
+                    })
+                })
+
+                const timeseries = timeseriesExtract({dataset:{"items": metricList},key:"items"})
+                const timeseriesTickets = timeseriesExtract({dataset:tickets, key:"items"})
                 const lst = await SYSTEMS.listZendeskIntegrations({ companyId: companyId })
+                const out = await SYSTEMS.listOutlookIntegrations({ companyId: companyId });
+                
+                console.log(timeseries)
 
                 setHasZendesk(lst.items.length > 0)
+                setHasOutlook(out.response.length > 0)
 
-                tickets.response.forEach(async (e) => {
-                    const chats = await API.getChatMessages({userId: e.userId, companyId: e.companyId})
-                    e.chats = chats.response
+                _metricsAll.totalChats = timeseries.items.length;
+                _metricsMonth.totalChats = timeseries.timeseriesMonth.length;
+                _metricsDay.totalChats = timeseries.timeseriesDay.length;
 
-                    if (chats.response)
-                        _metricsAll.totalChats += e.chats.length;
-                });
+                _metricsAll.activeTickets = timeseriesTickets.items.filter((e)=>e.status === "new").length;
+                _metricsAll.openTickets = timeseriesTickets.items.filter((e)=>e.status === "open").length;
 
-                tickets.timeseriesMonth.forEach(async (e) => {
-                    const chats = await API.getChatMessages({userId: e.userId, companyId: e.companyId})
-                    e.chats = chats.response
+                _metricsDay.activeTickets = timeseriesTickets.timeseriesDay.filter((e)=>e.status === "new").length;
+                _metricsDay.openTickets = timeseriesTickets.timeseriesDay.filter((e)=>e.status === "open").length;
 
-                    if (chats.response)
-                        _metricsMonth.totalChats += e.chats.length;
-                });
+                _metricsMonth.activeTickets = timeseriesTickets.timeseriesMonth.filter((e)=>e.status === "new").length;
+                _metricsMonth.openTickets = timeseriesTickets.timeseriesMonth.filter((e)=>e.status === "open").length;
 
-                tickets.timeseriesDay.forEach(async (e) => {
-                    const chats = await API.getChatMessages({userId: e.userId, companyId: e.companyId})
-                    e.chats = chats.response
+                
+                _metricsAll.activeTicketsWF = _metricsAll.activeTickets - _metricsMonth.activeTickets;
+                _metricsAll.openTicketsWF = _metricsAll.openTickets - _metricsMonth.openTickets;
+                _metricsAll.totalChatsWF = _metricsAll.totalChats - _metricsMonth.totalChats;
 
-                    if (chats.response)
-                        _metricsDay.totalChats += e.chats.length;
-                });
+                _metricsDay.activeTicketsWF = _metricsDay.activeTickets;
+                _metricsDay.openTicketsWF = _metricsDay.openTickets;
+                _metricsDay.totalChatsWF = _metricsDay.totalChats;
 
-                _metricsAll.activeTickets = tickets.response.filter((e)=>e.status === "new").length;
-                _metricsAll.openTickets = tickets.response.filter((e)=>e.status === "open").length;
+                _metricsMonth.activeTicketsWF = _metricsMonth.activeTickets - _metricsDay.activeTickets;
+                _metricsMonth.openTicketsWF = _metricsMonth.openTickets - _metricsDay.openTickets;
+                _metricsMonth.totalChatsWF = _metricsMonth.totalChats - _metricsDay.totalChats;
 
-                _metricsDay.activeTickets = tickets.timeseriesDay.filter((e)=>e.status === "new").length;
-                _metricsDay.openTickets = tickets.timeseriesDay.filter((e)=>e.status === "open").length;
-
-                _metricsMonth.activeTickets = tickets.timeseriesMonth.filter((e)=>e.status === "new").length;
-                _metricsMonth.openTickets = tickets.timeseriesMonth.filter((e)=>e.status === "open").length;
-
-                setData(tickets.response)
+                setData(tickets.items)
 
                 setMetrics(_metricsAll)
                 setMetricsDay(_metricsDay)
@@ -101,7 +122,7 @@ function WidgetCompanyMetrics({item, timeseriesIndex}) {
             <div onClick={()=>setPreview({type:'total_messages', item: item})} className="col-1x5 menu-statistics">
                 <div className='heading metric-heading'>
                     <h4 className='metric-numeric top'>{indexedMetrics.openTickets||0}</h4>
-                    <WidgetFigure value={0} />
+                    <WidgetFigure value={indexedMetrics.openTicketsWF||0} />
                 </div>
                 <div className='heading metric-heading'>
                     <h4>Open Tickets</h4>
@@ -111,7 +132,7 @@ function WidgetCompanyMetrics({item, timeseriesIndex}) {
             <div onClick={()=>setPreview({type:'total_messages', item: item})}  className="col-1x5 menu-statistics">
                 <div className='heading metric-heading'>
                     <h4 className='metric-numeric top'>{indexedMetrics.totalChats||0}</h4>
-                    <WidgetFigure value={0} />
+                    <WidgetFigure value={indexedMetrics.totalChatsWF||0} />
                 </div>
                 <div className='heading metric-heading'>
                     <h4>Total Messages</h4>
@@ -121,7 +142,7 @@ function WidgetCompanyMetrics({item, timeseriesIndex}) {
             <div onClick={()=>setPreview({type:'total_messages', item: item})}  className="col-1x5 menu-statistics">
                 <div className='heading metric-heading'>
                     <h4 className='metric-numeric top'>{indexedMetrics.activeTickets||0}</h4>
-                    <WidgetFigure value={0} />
+                    <WidgetFigure value={indexedMetrics.activeTicketsWF||0} />
                 </div>
                 <div className='heading metric-heading'>
                     <h4>New Tickets</h4>
@@ -142,7 +163,7 @@ function WidgetCompanyMetrics({item, timeseriesIndex}) {
                     <img src={outlookLogo} alt="zendesk" />
                 </div>
                 <div className='heading metric-heading'>
-                    <div className="hint disabled"><center>DISABLED</center></div>
+                <div className={`hint ${hasOutlook ? '' : 'disabled'}`}><center>{`${hasOutlook ? 'ENABLED' : 'DISABLED'}`}</center></div>
                 </div>
             </div>
 

@@ -9,6 +9,8 @@ import blurLoadingBackground from "../../images/blurred-loading-control.png"
 import Integrations from '../../controllers/integration.controller';
 import ZendeskIntegrationView from '../integrations/ZendeskIntegrationView';
 import OutlookIntegrationView from '../integrations/OutlookIntegrationView';
+import { AppContext } from '../../context/AppProvider';
+import IntegrationWidget from '../../components/generic/IntegrationWidget';
 
 const QAPI = new QuerySets();
 
@@ -47,6 +49,7 @@ const COMPANY_REPORTS = {
             const hashTable = { positive: {}, negative: {} }
 
             negativeResponses.forEach((e) => {
+                if (e.messageBody.toString().length < 5) return;
                 if (hashTable.negative.hasOwnProperty(`user_${e.userId}`)) {
                     hashTable.negative[`user_${e.userId}`].count++;
                 } else {
@@ -56,6 +59,7 @@ const COMPANY_REPORTS = {
                 }
             })
             positiveResponses.forEach((e) => {
+                if (e.messageBody.toString().length < 5) return;
                 if (hashTable.hasOwnProperty(e.id)) {
                     hashTable.positive[`user_${e.userId}`].count++;
                 } else {
@@ -91,25 +95,30 @@ const COMPANY_REPORTS = {
 }
 
 function CompanyReport({ item, popupType, handleClose }) {
+    const {handleWarning, handleAlert} = React.useContext(AppContext)
     const [API] = React.useState(new QuerySets())
     const [SYSTEMS] = React.useState(new Integrations())
     const [dataset, setDataset] = React.useState(null)
     const popupRef = React.useRef(null);
     const [integrationList, setIntegrationList] = React.useState([])
+    const [outlookList, setOutlookList] = React.useState([])
+    const [outlookAuthorizationObject, setOutlookAuthorizationObject] = React.useState(null)
     const [processing, setProcessing] = React.useState(false)
     const [transform, setTransform] = React.useState("translateX(100%)")
     const [analysis, setAnalysis] = React.useState(null)
     const [isNewIntegration, setIsNewIntegration] = React.useState(false)
+    const [outlookEmail, setOutlookEmail] = React.useState("")
     const [zendeskDomain, setZendeskDomain] = React.useState(item.zendeskDomain)
     const [zendeskUser, setZendeskUser] = React.useState(item.zendeskUser)
     const [zendeskToken, setZendeskToken] = React.useState(item.zendeskToken)
+    const [localChange, setLocalChange] = React.useState(0)
 
     const handleZendeskIntegration = () => {
         let invalid = false;
 
         integrationList.forEach((e) => {
             if (zendeskDomain === e.domain && !invalid) {
-                alert(`You have already registered an integration with '${e.domain}'`)
+                handleWarning(`You have already registered an integration with '${e.domain}'`)
                 invalid = true;
                 return;
             }
@@ -132,14 +141,76 @@ function CompanyReport({ item, popupType, handleClose }) {
 
                     const lst = await SYSTEMS.listZendeskIntegrations({ companyId: item.id })
                     setIntegrationList(lst.items)
+
+                    handleAlert(`Your integration '${zendeskDomain}' for '${item.businessName}' has been created.'`)
+                    setLocalChange(localChange+1)
                 }, 5000);
             } else {
+                handleWarning(`Invalid Zendesk Credentials! Please try again with a deferent combination.'`)
                 setProcessing(false);
+                setLocalChange(localChange+1)
             }
         });
 
     }
 
+    async function pollOutlookProcess(res) {
+        return new Promise((resolve) => {
+            const intervalId = setInterval(async () => {
+                const processes = await SYSTEMS.findOutlookProcess({ id: res.item.id });
+                
+                if (processes.response && processes.response[0]) {
+                    if (processes.response[0].status === "verified") {
+                        clearInterval(intervalId); // Stop the interval processing
+                        resolve(processes.response);
+                    }
+                }
+            }, 5000);
+        });
+    }
+
+    const handleOutlookIntegration = () => {
+        let invalid = false;
+
+        outlookList.forEach((e) => {
+            if (outlookEmail === e.email && !invalid) {
+                handleWarning(`You have already registered an integration with '${e.email}'`)
+                invalid = true;
+                return;
+            }
+        })
+
+        if (invalid) return;
+
+        setProcessing(true);
+
+        SYSTEMS.outlookTest({
+            companyId: item.id,
+            integrationEmail: outlookEmail,
+        }).then(async (res) => {
+            if (res.response === "pending-user-action") {
+                setOutlookAuthorizationObject(res.item);
+
+                const lst = await pollOutlookProcess(res);
+                console.log(lst)
+                setOutlookList(lst);
+                setProcessing(false);
+                setIsNewIntegration(false);
+                handleAlert(`Your integration '${outlookEmail}' for '${item.businessName}' has been created.'`)
+                setLocalChange(localChange+1)
+            } else {
+                const lst = await SYSTEMS.listOutlookIntegrations({ companyId: item.id });
+                console.log(lst);
+                setOutlookList(lst.response);
+                setProcessing(false);
+                setIsNewIntegration(false);
+                handleAlert(`Your email has been integrated with this company '${outlookEmail}'.`);
+                setProcessing(false);
+                setLocalChange(localChange+1)
+            }
+        });
+
+    }
 
     React.useEffect(() => {
         if (popupType === "total_messages" && dataset && dataset.chats) {
@@ -164,8 +235,10 @@ function CompanyReport({ item, popupType, handleClose }) {
                 setDataset(await COMPANY_REPORTS[popupType].analytics(item))
 
                 const lst = await SYSTEMS.listZendeskIntegrations({ companyId: item.id })
+                const out = await SYSTEMS.listOutlookIntegrations({ companyId: item.id });
 
-                setIntegrationList(lst.items)
+                setOutlookList(out.response);
+                setIntegrationList(lst.items);
             } catch (error) {
 
             }
@@ -173,7 +246,7 @@ function CompanyReport({ item, popupType, handleClose }) {
 
         setTransform("translateX(0%)")
         init();
-    }, [API]);
+    }, [API, localChange]);
 
     return (
         <div style={{ height: "70vh", transform: transform }} ref={popupRef} className="widget-2x3 company-crm-statistics popup-window">
@@ -285,7 +358,7 @@ function CompanyReport({ item, popupType, handleClose }) {
                                     </div>
                                 </div>
                             </div>}
-                            {popupType === "zendesk_integration" && <div className='form-classic integration-controls'>
+                            {popupType === "zendesk_integration" && <div style={{ width: "100%", overflowY: "scroll" }} className='form-classic integration-controls'>
                                 {isNewIntegration && <ZendeskIntegrationView
                                     processing={processing}
                                     handleIntegration={handleZendeskIntegration}
@@ -297,18 +370,7 @@ function CompanyReport({ item, popupType, handleClose }) {
                                     zendeskToken={zendeskToken}
                                 />}
                                 {!isNewIntegration && <div className='widget col-3x3'>
-                                    {integrationList.map((e, idx) => <div class="col-1x3 integration-item">
-                                        <div class="logo-wrapper">
-                                            <img src={zendeskLogo} alt="zendesk" />
-                                        </div>
-                                        <div class="heading metric-heading">
-                                            <div className='heading'>
-                                                <h4>Queries: {e.queryCount}</h4>
-                                                <h4>Last Sync: {e.lastSyncDate}</h4>
-                                            </div>
-                                            <div class="hint"><center>{(e.companyData.businessName||"System").split(" ")[0]}/{e.domain}</center></div>
-                                        </div>
-                                    </div>)}
+                                    {integrationList.map((e, idx) => <IntegrationWidget key={idx} item={e} logo={zendeskLogo} />)}
                                     <div onClick={()=>setIsNewIntegration(true)} class="col-1x3 integration-item">
                                         <div class="logo-wrapper">
                                             <img src={"https://as1.ftcdn.net/jpg/01/09/34/96/220_F_109349657_6BLNYxVVSBLQxwXjJ9n05OAuHVOZk8lh.jpg"} alt="zendesk" />
@@ -319,28 +381,25 @@ function CompanyReport({ item, popupType, handleClose }) {
                                     </div>
                                 </div>}
                             </div>}
-                            {popupType === "outlook_integration"  && <div className='form-classic integration-controls'>
+                            {popupType === "outlook_integration"  && <div style={{ width: "100%", overflowY: "scroll" }} className='form-classic integration-controls'>
                                 {isNewIntegration && <OutlookIntegrationView
+                                    metadata={outlookAuthorizationObject}
                                     processing={processing}
-                                    handleIntegration={handleZendeskIntegration}
-                                    setZendeskDomain={setZendeskDomain}
-                                    setZendeskUser={setZendeskUser}
-                                    setZendeskToken={setZendeskToken}
-                                    zendeskDomain={zendeskDomain}
-                                    zendeskUser={zendeskUser}
-                                    zendeskToken={zendeskToken}
+                                    handleIntegration={handleOutlookIntegration}
+                                    outlookEmail={outlookEmail}
+                                    setOutlookEmail={setOutlookEmail}
                                 />}
                                 {!isNewIntegration && <div className='widget col-3x3'>
-                                    {integrationList.map((e, idx) => <div class="col-1x3 integration-item">
+                                    {outlookList.map((e, idx) => <div class="col-1x3 integration-item">
                                         <div class="logo-wrapper">
                                             <img src={outlookLogo} alt="zendesk" />
                                         </div>
                                         <div class="heading metric-heading">
                                             <div className='heading'>
-                                                <h4>Queries: {e.queryCount}</h4>
-                                                <h4>Last Sync: {e.lastSyncDate}</h4>
+                                                <h4>Status: {e.status}</h4>
+                                                <h4>Last Sync: {e.createdDate}</h4>
                                             </div>
-                                            <div class="hint"><center>{(e.companyData.businessName||"System").split(" ")[0]}/{e.domain}</center></div>
+                                            <div class="hint"><center>{(e.email).split(" ")[0]}/{e.userCode}</center></div>
                                         </div>
                                     </div>)}
                                     <div onClick={()=>setIsNewIntegration(true)} class="col-1x3 integration-item">

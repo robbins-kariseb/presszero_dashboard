@@ -64,11 +64,11 @@ function TopMenuBar({setTab}) {
                         <div className='form-control profile-control-wrapper'>
                             <div className="profile">
                                 {userData && <div className="profile-image-wrapper">
-                                    <img src={`https://presszero-testing.eastus.cloudapp.azure.com${userData.userData.imageUrl}`} alt={''} />
+                                    <img src={`${userData.userData.imageUrl[0]==='/' ? 'https://presszero-testing.eastus.cloudapp.azure.com' : ''}${userData.userData.imageUrl}`} alt={'Profile Image'} />
                                 </div>}
                                 {userData && <div className="profile-info-wrapper">
                                     <h4>{userData.userData.name} {userData.userData.surname}</h4>
-                                    <h6>{userData.userData.accessGroup.toString().toUpperCase()}</h6>
+                                    <h6>{userData.userData.accessGroup === 'ghost-user' ? 'SUPER-USER' : userData.userData.accessGroup.toString().toUpperCase()}</h6>
                                     <div className='form-control'>
                                         <span className="material-symbols-outlined">arrow_drop_down</span>
                                     </div>

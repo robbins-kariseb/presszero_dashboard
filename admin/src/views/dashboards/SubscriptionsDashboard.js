@@ -13,14 +13,18 @@ import NewCompanyForm from '.././forms/NewCompanyForm';
 import { AppContext } from '../../context/AppProvider';
 import WidgetSubscriptionMetrics from '../../components/metrics/widgets/WidgetSubscriptionMetrics';
 import SubscriptionListView from '../../components/generic/SubscriptionListView';
+import Subscriptions from '../../controllers/subscription.controller';
 
+const subscriptionIcon = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQunX1Tvb_bOVXJYXUHWLaRgNX7x_eco5UL6w&usqp=CAU"
 
 const SubscriptionsDashboard = () => {
     const {universalChangeCounter,applicationTabs} = React.useContext(AppContext)
     const [isLoading,setIsLoading] = React.useState(true)
     const [processed,setProcessed] = React.useState(false)
     const [API] = React.useState(new QuerySets())
+    const [SUBS] = React.useState(new Subscriptions())
     const [unfilteredData,setUnfilteredData] = React.useState([])
+    const [subscriptionList,setSubscriptionList] = React.useState([])
     const [data,setData] = React.useState([])
     const [chatData,setChatData] = React.useState([])
     const [subscribedCompanies,setSubscribedCompanies] = React.useState([])
@@ -46,12 +50,9 @@ const SubscriptionsDashboard = () => {
     React.useEffect(()=>{
         const init = async ()=>{
             const dataset = await API.getSubscriptions()
+            const subscriptions = await SUBS.listSubscriptionModels()
     
             try {
-                // setBusinesses(dataset.items.sort((a,b)=> {
-                //     return a.totalChats - b.totalChats
-                // }).slice().reverse().slice(0, 3));
-
                 const companies = dataset.items.map((e)=>{
                     return {
                         ...e.company,
@@ -67,9 +68,10 @@ const SubscriptionsDashboard = () => {
                     e.searchImage = e.logoUrl;
                 });
                 
+                setSubscriptionList(subscriptions.items)
                 setUnfilteredData(companies)
                 setData(companies.filter((a)=>{
-                    return a.name === "Trail";
+                    return a.name === "Trial";
                 }))
 
                 setProcessed(true)
@@ -78,7 +80,7 @@ const SubscriptionsDashboard = () => {
                     return a.name === "Demo";
                 }).length,
                 trail: companies.filter((a)=>{
-                    return a.name === "Trail";
+                    return a.name === "Trial";
                 }).length,
                 basic: companies.filter((a)=>{
                     return a.name === "Basic";
@@ -103,7 +105,7 @@ const SubscriptionsDashboard = () => {
             setData(dataset)
         } else if (tab === 0) {
             const dataset = unfilteredData.filter((a)=>{
-                return a.name === "Trail";
+                return a.name === "Trial";
             })
 
             setData(dataset)
@@ -186,24 +188,27 @@ const SubscriptionsDashboard = () => {
                                 <SearchBar placeholder={"Search for Companies here..."} searchPhrase={searchPhrase} onChange={setSearchPhrase} />
                             </div>
                             <div className='col-1x3 widget-actions'>
-                                <Button onClick={()=>setPreview({item:{}, type:"new"})} additionalClasses={'special'} title={`Add Company`} />
+                                <Button onClick={()=>setPreview({item:{}, type:"new"})} additionalClasses={'special'} title={`Add Subscription`} />
                             </div>
                         </div>
                         {searchResults.sort((a,b)=>(a.verified ? 1 : 0) - (b.verified ? 1 : 0)).reverse().map((e,idx)=>{
-                            return <SubscriptionListView pageBreak={`${(idx + 1) % 3 === 2 ? 'last-in-row' : ''}`} item={e} key={idx} />
+                            return <SubscriptionListView pageBreak={`${(idx + 1) % 3 === 2 ? 'last-in-row' : ''}`} item={e} key={`${idx}${tab}`} />
                         })}
                     </div>
                     <div className='widget-container db-v-2 col-1x4'>
                     <div className='tool-bar col-3x3'>
-                            <div className='col-1x3' style={{width: "100%"}}>
+                            <div className='col-1x3' style={{width: "66%"}}>
                                 <div className='flex'>
                                     <div className='heading' style={{paddingTop: 20}}>
-                                        <h4>Zendesk Requests</h4>
+                                        <h4>Subscription Models</h4>
                                     </div>
                                 </div>
                             </div>
+                            <div className='col-1x3 widget-actions'>
+                                <Button onClick={()=>setPreview({item:{}, type:"new"})} additionalClasses={'special'} title={`Create`} />
+                            </div>
                         </div>
-                        {[1,2,3,4,5,6,7].map((e,idx)=><ListView key={idx} item={{title: `Zendesk Request Item ${e+134}`, subtitle: "Nustream"}} />)}
+                        {subscriptionList.map((e,idx)=><ListView key={idx} item={{title: `${e.name} Subscription`, logoUrl: subscriptionIcon, subtitle: <strong>${e.currentPrice} P/M</strong>}} />)}
                     </div>
                 </div>
             </PageContainer>

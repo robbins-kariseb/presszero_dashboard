@@ -29,6 +29,90 @@ export default class Integrations  {
         });
     }
 
+    outlookTest = async ({companyId, integrationEmail}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "integrationEmail": integrationEmail,
+            "companyId": companyId
+        });
+          
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+          
+
+        return await fetch(`${API_REFERENCE}api/press/zero/admin/company/email/integration`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
+    findOutlookProcess = async ({id}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "filters": {
+              "id": id
+            }
+          });
+          
+          var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+          
+
+        return await fetch(`${API_REFERENCE}api/press/zero/filter/outlookCommentLog`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
+    listOutlookIntegrations = async ({companyId}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "filters": {
+              "companyId": companyId,
+              "status": "verified"
+            }
+          });
+          
+          var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+          
+
+        return await fetch(`${API_REFERENCE}api/press/zero/filter/outlookCommentLog`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
     listZendeskIntegrations = async ({companyId}) => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);

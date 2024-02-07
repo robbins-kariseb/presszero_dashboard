@@ -2,6 +2,7 @@ import React from 'react'
 import Button from '../../components/Button';
 import zendeskLogo from "../../images/zendesk.png";
 import blurLoadingBackground from "../../images/blurred-loading-control.png"
+import { isValidEmail } from '../../utilities/helpers';
 
 function ZendeskIntegrationView({processing,handleIntegration,setZendeskDomain, setZendeskUser,setZendeskToken,zendeskDomain,zendeskUser,zendeskToken}) {
     return (
@@ -22,7 +23,7 @@ function ZendeskIntegrationView({processing,handleIntegration,setZendeskDomain, 
                     <label>Zendesk Token</label>
                     <input type={"text"} value={zendeskToken||""} onChange={(e) => setZendeskToken(e.target.value)} />
                 </div>
-                <Button disabled={((zendeskDomain||"").length < 2 ||(zendeskUser||"").length < 2 ||(zendeskToken||"").length < 2)} onClick={handleIntegration} title={"Connect"} />
+                <Button disabled={((zendeskDomain||"").length < 2 ||!isValidEmail(zendeskUser||"")||(zendeskToken||"").length < 2)} onClick={handleIntegration} title={"Connect"} />
             </div>
 
             {processing && <React.Fragment>
