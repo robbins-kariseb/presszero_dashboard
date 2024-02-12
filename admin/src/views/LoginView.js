@@ -18,7 +18,7 @@ function LoginView() {
         const isAuthorized = await handleUserSignIn({username:username,password:password})
         console.log(isAuthorized)
         if (isAuthorized) {
-            navigate('/dashboard');
+            if (!window.location.href.includes("/dashboard")) window.location.href = "/dashboard";
         } else {
             setErrorMessage("Invalid username or password!")
             const interval = setTimeout(() => {

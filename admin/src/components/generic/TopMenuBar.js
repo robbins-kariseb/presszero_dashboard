@@ -17,12 +17,7 @@ function TopMenuBar({setTab}) {
         navigate(uri);
     }
 
-    /** 
-     * TODO: Implement a mechnanism that will check if the cursor has entered profile-container and setDropdown = true if so
-     * Also, if the cursor exits content-container the setDropdown = false should be triggered
-    */
-
-    React.useEffect(()=>{},[userData])
+    React.useEffect(()=>{},[userData, applicationTabs])
 
     return (
         <div className='menu-top-bar full-width'>

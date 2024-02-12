@@ -44,6 +44,84 @@ body {
     width: 50%;
 }
 
+.table-action-buttons {
+  position: relative;
+  top: -10px;
+  float: right;
+}
+
+.confirmation-box {
+  margin: auto;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #0b0b0b94;
+  z-index: 10000;
+  backdrop-filter: blur(20px);
+}
+
+.category-manager .category-wrapper {
+  height: 30vh;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.confirmation-box .mini-window {
+  margin: auto;
+  width: 30vw;
+  min-height: 25vh;
+  max-height: 50vh;
+  background: white;
+  display: block;
+  margin-top: 20vh;
+  border-radius: 10px;
+  padding: 30px;
+}
+
+
+.confirmation-box .mini-window .heading {
+  padding-bottom: 10px;
+}
+
+.confirmation-box .mini-window .heading h4 {
+  padding-bottom: 30px;
+}
+
+.confirmation-box .mini-window .col-1x2 .button {
+  width: 100%;
+  text-align: center;
+}
+
+.form-classic .form-control select {
+  width: 100%;
+}
+
+.form-classic.col-1x2 label {
+  padding: 4px;
+  width: 100%;
+  display: flex;
+  margin-left: 15px;
+}
+
+.table-action-buttons {
+  position: relative;
+  top: -10px;
+  float: right;
+}
+
+.form-control .react-tel-input input {
+  max-height: 100px;
+  height: auto;
+  width: 100%;
+  padding: 8px 12px 8px 50px;
+  border-radius: 10px;
+  border: 1px solid #e7e7e7;
+  min-width: 90%;
+  box-shadow: 7px 5px 11px 3px #0000001a;
+}
+
 .col-1x4.mini-toolbar .col-2x2 .col-1x2 .button {
     float: right;
     position: relative;
@@ -441,6 +519,7 @@ table.classic-table tr {
   border-radius: 15px;
   max-width: 240px;
   text-align: center;
+  margin: 5px;
 }
 
 .category.heading {
@@ -1717,9 +1796,38 @@ p.form-error {
   }
 }
 
+.confirmation-box .mini-window .content {
+  max-height: 300px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.confirmation-box .mini-window  .content-scroll-control {
+  max-height: 200px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.confirmation-box .mini-window .content .widget.col-1x3.large-button {
+  width: 90%;
+  margin: 2%;
+  padding: 5px;
+  text-align: center;
+  border-bottom: 5px solid #d3dcda;
+}
+
+.confirmation-box .mini-window .content .widget.col-1x3.large-button h4, .confirmation-box .mini-window .content .widget.col-1x3.large-button h5 {
+  padding: 0;
+  padding-bottom: 10px;
+}
+
+.confirmation-box .mini-window .content .widget.col-1x3.large-button:hover {
+  border-bottom: 5px solid #004D40;
+  cursor: pointer;
+}
+
 .wrap {
-  display: grid;
-  width: 180px;
+  width: 200px;
   margin-left: 25%;
   text-align: center;
 }
