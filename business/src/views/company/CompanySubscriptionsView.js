@@ -105,7 +105,7 @@ function CompanySubscriptionsView() {
                             title: "Week",
                             onClick: (() => { })
                         }, {
-                            title: "All Time",
+                            title: "Month",
                             onClick: (() => { })
                         }]}
                         setTab={setTimeSeriesTab}

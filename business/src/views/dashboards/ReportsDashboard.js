@@ -133,7 +133,7 @@ const ReportsDashboard = () => {
                                 title: "Week", 
                                 onClick: (()=>{})
                             },{
-                                title: "All Time", 
+                                title: "Month", 
                                 onClick: (()=>{})
                             }]} 
                             setTab={setTimeSeriesTab}

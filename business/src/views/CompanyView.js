@@ -3,7 +3,7 @@ import { AppContext } from '../context/AppProvider';
 import CompanyOverView from './company/CompanyOverView';
 import CompanyReportsView from './company/CompanyReportsView';
 import CompanyUserView from './company/CompanyUserView';
-import CompanySubscriptionsView from './company/CompanySubscriptionsView';
+import TeamsDashboard from './dashboards/TeamsDashboard';
 
 function CompanyView() {
     const { applicationTabs } = React.useContext(AppContext)
@@ -14,7 +14,7 @@ function CompanyView() {
             {applicationTabs === 0 && <CompanyOverView />}
             {applicationTabs === 1 && <CompanyReportsView />}
             {applicationTabs === 2 && <CompanyUserView />}
-            {applicationTabs === 3 && <CompanySubscriptionsView />}
+            {applicationTabs === 3 && <TeamsDashboard />}
         </React.Fragment>
     )
 }

@@ -23,7 +23,7 @@ function PerformanceMetrics({title, content}) {
                                 title: "Week",
                                 onClick: (() => { })
                             }, {
-                                title: "All Time",
+                                title: "Month",
                                 onClick: (() => { })
                             }]}
                         setTab={setTab}

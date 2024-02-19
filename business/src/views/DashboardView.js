@@ -2,8 +2,10 @@ import React from 'react';
 import { AppContext } from '../context/AppProvider';
 import OverviewDashboard from './dashboards/OverviewDashboard';
 import ReportsDashboard from './dashboards/ReportsDashboard';
-import UsersDashboard from './dashboards/UsersDashboard';
-import SubscriptionsDashboard from './dashboards/SubscriptionsDashboard';
+import TeamsDashboard from './dashboards/TeamsDashboard';
+import BrandControlsDashboard from './dashboards/BrandControlsDashboard';
+import CustomerInvitationDashboard from './dashboards/CustomerInvitationDashboard';
+import SettingsDashboard from './dashboards/SettingsDashboard';
 
 function DashboardView() {
     const { applicationTabs } = React.useContext(AppContext)
@@ -13,8 +15,10 @@ function DashboardView() {
         <React.Fragment>
             {applicationTabs === 0 && <OverviewDashboard />}
             {applicationTabs === 1 && <ReportsDashboard />}
-            {applicationTabs === 2 && <UsersDashboard />}
-            {applicationTabs === 3 && <SubscriptionsDashboard />}
+            {applicationTabs === 2 && <BrandControlsDashboard />}
+            {applicationTabs === 3 && <TeamsDashboard />}
+            {applicationTabs === 4 && <CustomerInvitationDashboard />}
+            {applicationTabs === 5 && <SettingsDashboard />}
         </React.Fragment>
     )
 }
