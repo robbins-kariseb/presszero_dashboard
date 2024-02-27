@@ -17,7 +17,7 @@ const TeamsDashboard = () => {
     const [unfilteredData,setUnfilteredData] = React.useState([])
     const [data,setData] = React.useState([])
     const [chatData,setChatData] = React.useState([])
-    const [bussinesses,setBusinesses] = React.useState([])
+    const [businesses,setBusinesses] = React.useState([])
     const [activeUserList,setActiveUserList] = React.useState([])
     const [preview, setPreview] = React.useState(null)
     const [searchPhrase, setSearchPhrase] = React.useState("")
@@ -108,14 +108,14 @@ const TeamsDashboard = () => {
         }
     },[tab,universalChangeCounter])
 
-    React.useEffect(()=>{},[bussinesses])
+    React.useEffect(()=>{},[businesses])
 
     React.useEffect(()=>{
-        setIsLoading(data.length === 0 ||chatData.length === 0 ||bussinesses.length === 0)
+        setIsLoading(data.length === 0 ||chatData.length === 0 ||businesses.length === 0)
         if (!isLoaded) {
-            setIsLoaded(!(data.length === 0 ||chatData.length === 0 ||bussinesses.length === 0));
+            setIsLoaded(!(data.length === 0 ||chatData.length === 0 ||businesses.length === 0));
         }
-    },[data,chatData,bussinesses,universalChangeCounter])
+    },[data,chatData,businesses,universalChangeCounter])
 
     return (
         <React.Fragment>

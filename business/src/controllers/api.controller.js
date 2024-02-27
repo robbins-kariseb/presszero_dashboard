@@ -5,6 +5,6 @@ export const ENDPOINTS = {
     development: 'https://presszero-dev.eastus.cloudapp.azure.com/en-us/',
 }
 
-export const ENV_LOCATION = "quality_assurance";
+export const ENV_LOCATION = "testing";
 export const API_REFERENCE = ENDPOINTS[ENV_LOCATION];
 export const API_TOKEN = '1fbbafefe1fca393a4b56caf93bc2ca5427cb875'

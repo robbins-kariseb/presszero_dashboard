@@ -66,7 +66,7 @@ function LoginView() {
                         <div className='form-control'>
                             <div className='wrap'>
                                 <input type='checkbox' placeholder='Remember Me?' />
-                                <label>Remember me?</label>
+                                <label style={{display: "grid"}}>Remember me?</label>
                             </div>
                         </div>
 

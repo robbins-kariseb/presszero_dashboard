@@ -348,11 +348,12 @@ input[type="color"] {
 }
 
 .menu-top-bar.full-width {
-  width: 97%;
+  width: 100%;
   padding: 10px 20px 0px 20px;
   -webkit-box-shadow: 0px 3px 14px 3px #0000000d;
   box-shadow: 0px 3px 14px 3px #0000000d;
   border-bottom: 2px solid #e5e5e5;
+  background: white;
 }
 
 .full-width,
@@ -1120,7 +1121,13 @@ table.business-themed-table tr {
 .profile {
   display: inline-flex;
   border-radius: 30px;
-  background: #EDEDEF;
+  background: whitesmoke;
+}
+
+.col-1x2.business-form.scrollable-container {
+  height: 60vh;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .profile .profile-image-wrapper {
@@ -1578,6 +1585,42 @@ thead tr td {
   z-index: 100;
 }
 
+.widget-fixed-section {
+  min-height: 225px;
+}
+
+.empty-text {
+  min-height: 300px;
+  text-align: center;
+  padding-top: 150px;
+  color: #b7b7b7;
+}
+
+.empty-text .text-container {
+  margin: auto;
+  text-align: center;
+}
+
+.empty-text .text-container p {
+  padding-left: 20%;
+  padding-right: 20%;
+}
+
+.smart-search {
+  width: 65%;
+  display: block;
+  margin: auto;
+}
+
+.smart-search .search-wrapper {
+  margin: auto;
+  display: block;
+}
+
+.smart-search .search-wrapper input {
+  width: 90%;
+}
+
 .numeric-graphic.good {
   border: 5px solid #188365;
   background: #eaf2ea;
@@ -1728,9 +1771,29 @@ table .mini-heading .title-wrapper h4 {
 
 .scrollable-container {
   width: 98%;
-  height: 65vh;
+  height: 70vh;
   overflow: hidden;
   overflow-y: scroll;
+}
+
+.insight-message-wrapper.user-message-type {
+  position: relative;
+  background: #5D8076;
+  left: 35%;
+}
+
+.message-insight {
+  padding: 5px;
+  background: white;
+  color: black;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.scrollable.scroll-control {
+  height: 50vh;
+  max-height: 50vh;
 }
 
 /* The switch - the box around the slider */
@@ -2126,6 +2189,24 @@ p.form-error {
   cursor: pointer;
 }
 
+.insight-message-wrapper {
+  background: #727274;
+  width: 50%;
+  color: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 11px 12px #0000000f;
+  margin-bottom: 40px;
+}
+
+.insight-wrapper {
+  font-size: 18px;
+  padding: 20px;
+  margin-bottom: 15px;
+  background: #F8F8F8;
+  border-radius: 10px;
+}
+
 .wrap {
   width: 200px;
   margin-left: 25%;
@@ -2347,6 +2428,7 @@ p.form-error {
 }
 
 .widget.col-1x4 {
+  background-color: white;
   min-height: 150px;
   padding: 1.5%;
   border: 2px solid #f8f8f8;

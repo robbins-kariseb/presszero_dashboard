@@ -239,6 +239,31 @@ export default class QuerySets {
         });
     }
 
+    getFilteredModels = async ({model, filters}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "filters": filters
+        });
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/filter/${model}`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
     deleteModel = async ({model, id}) => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
@@ -564,7 +589,6 @@ export default class QuerySets {
         });
     }
 
-
     getFeedbackStatistics = async () => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
@@ -607,6 +631,35 @@ export default class QuerySets {
         };
 
         return await fetch(`${API_REFERENCE}api/press/zero/admin/ca/statistics`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
+    getSocialLinks = async ({companyId}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "filters": {
+                "companyId": companyId
+            }
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            mode: "cors",
+            cache: "no-cache",
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/filter/socialLinks`, requestOptions)
         .then(response => response.text())
         .then(result => JSON.parse(result))
         .catch(error => {

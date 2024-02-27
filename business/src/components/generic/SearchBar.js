@@ -1,6 +1,15 @@
 import React from 'react';
 
-function SearchBar({placeholder,searchPhrase, onChange}) {
+function SearchBar({onSearch, placeholder,searchPhrase, onChange}) {
+
+    function handleKeyDown(e) {
+        // Check if the pressed key is "Enter"
+        if (e.key === 'Enter') {
+            // Call your function here
+            onSearch();
+        }
+    }
+    
     return (
         <React.Fragment>
             <div className='search-wrapper'>
@@ -11,6 +20,7 @@ function SearchBar({placeholder,searchPhrase, onChange}) {
                     <input
                         placeholder={placeholder}
                         value={searchPhrase}
+                        onKeyDown={handleKeyDown}
                         onChange={(e)=>onChange(e.target.value)}
                     />
                 </div>

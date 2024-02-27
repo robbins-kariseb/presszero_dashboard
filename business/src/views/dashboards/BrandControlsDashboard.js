@@ -25,7 +25,55 @@ const BrandControlsDashboard = () => {
     const [tab, setTab] = React.useState(0)
     const [menuTab, setMenuTab] = React.useState(0)
     const [isLoaded, setIsLoaded] = React.useState(false);
+    const [socialLinks, setSocialLinks] = React.useState(null)
     const [companyId] = React.useState(userData ? userData.userData.companyId : null)
+
+    const [businessNameField, setBusinessName] = React.useState(myBusiness.businessName)
+    const [descriptionField, setDescription] = React.useState(myBusiness.description)
+    const [businessHighlightsField, setBusinessHighlights] = React.useState(myBusiness.highlights)
+    const [phoneField, setPhoneField] = React.useState(myBusiness.phone)
+    const [websiteUrlField, setWebsiteUrl] = React.useState(myBusiness.websiteUrl)
+
+    const [rgbColours, setRgbColours] = React.useState(myBusiness.rgbColours)
+    const [hexColours, setHexColours] = React.useState(myBusiness.hexColours)
+
+    const [twitterField, setTwitter] = React.useState("")
+    const [facebookField, setFacebook] = React.useState("")
+    const [linkedinField, setLinkedin] = React.useState("")
+    const [instagramField, setInstagram] = React.useState("")
+    const [appleStoreLinkField, setAppleStoreLink] = React.useState("")
+    const [googlePlayLinkField, setGooglePlayLink] = React.useState("")
+
+    const saveChanges = async () => {
+        await API.updateModel({model: "socialLinks", fields: {
+            twitter: twitterField,
+            facebook: facebookField,
+            linkedin: linkedinField,
+            instagram: instagramField,
+            googlePlayLink: appleStoreLinkField,
+            appleStoreLink: googlePlayLinkField,
+        }, id: socialLinks.id})
+
+        await API.updateModel({model: "company", fields: {
+            businessName: businessNameField,
+            description: descriptionField,
+            highlights: businessHighlightsField,
+            phone: phoneField,
+            websiteUrl: websiteUrlField,
+        }, id: myBusiness.id})
+
+        if (userData.companyData) {
+            userData.companyData.businessName = businessNameField;
+            userData.companyData.description = descriptionField;
+            userData.companyData.highlights = businessHighlightsField;
+            userData.companyData.phone = phoneField;
+            userData.companyData.websiteUrl = websiteUrlField;
+
+            localStorage.setItem('user_data', JSON.stringify(userData))
+        }
+
+        handleAlert("Your changes have been updated successfully!")
+    }
 
     const hidePreview = () => setPreview(null)
 
@@ -36,7 +84,19 @@ const BrandControlsDashboard = () => {
 
     React.useEffect(()=>{
         const init = async ()=>{
-            
+            const sl = await API.getSocialLinks({companyId: companyId})
+
+            if (sl && sl.response) {
+                const item = sl.response[0];
+                setSocialLinks(item)
+
+                setTwitter(item.twitter)
+                setFacebook(item.facebook)
+                setLinkedin(item.linkedin)
+                setInstagram(item.instagram)
+                setAppleStoreLink(item.googlePlayLink)
+                setGooglePlayLink(item.appleStoreLink)
+            }
         }
         
         init();
@@ -44,7 +104,7 @@ const BrandControlsDashboard = () => {
 
     React.useEffect(()=>{
         
-    },[universalChangeCounter])
+    },[universalChangeCounter, socialLinks])
 
     return (
         <React.Fragment>
@@ -68,58 +128,58 @@ const BrandControlsDashboard = () => {
 
                         <div className='form-control'>
                             <label>Company Name</label>
-                            <input value={myBusiness.businessName} type={"text"} onChange={(e)=>{}} />
+                            <input value={businessNameField} type={"text"} onChange={(e)=>{setBusinessName(e.target.value)}} />
                         </div>
 
                         <div className='form-control'>
                             <label>Company Description</label>
-                            <input value={myBusiness.description} type={"text"} onChange={(e)=>{}} />
+                            <input value={descriptionField} type={"text"} onChange={(e)=>{setBusinessName(e.target.value)}} />
                         </div>
 
                         <div className='form-control'>
                             <label>Company Highlights</label>
-                            <input value={myBusiness.highlights||""} type={"text"} onChange={(e)=>{}} />
+                            <input value={businessHighlightsField} type={"text"} onChange={(e)=>{setBusinessHighlights(e.target.value)}} />
                         </div>
 
                         <div className='form-control'>
                             <label>Phone Number</label>
-                            <input value={myBusiness.phone} type={"text"} onChange={(e)=>{}} />
+                            <input value={phoneField} type={"text"} onChange={(e)=>{setPhoneField(e.target.value)}} />
                         </div>
 
                         <div className='form-control'>
                             <label>URL</label>
-                            <input value={myBusiness.websiteUrl} type={"text"} onChange={(e)=>{}} />
+                            <input value={websiteUrlField} type={"text"} onChange={(e)=>{setWebsiteUrl(e.target.value)}} />
                         </div>
                     </div>
                     <div style={{marginTop: 55}} className='col-1x2 business-form'>
                         <div className='form-control'>
                             <label><div className='labeled-icon'><img src={instagram} alt='icon' /></div><div className='labeled-text'>Instagram</div></label>
-                            <input value={""} type={"text"} onChange={(e)=>{}} />
+                            <input value={instagramField} type={"text"} onChange={(e)=>{setInstagram(e.target.value)}} />
                         </div>
 
                         <div className='form-control'>
                             <label><div className='labeled-icon'><img src={facebook} alt='icon' /></div><div className='labeled-text'>Facebook</div></label>
-                            <input value={""} type={"text"} onChange={(e)=>{}} />
+                            <input value={facebookField} type={"text"} onChange={(e)=>{setFacebook(e.target.value)}} />
                         </div>
 
                         <div className='form-control'>
                             <label><div className='labeled-icon'><img src={linkedin} alt='icon' /></div><div className='labeled-text'>LinkedIn</div></label>
-                            <input value={""} type={"text"} onChange={(e)=>{}} />
+                            <input value={linkedinField} type={"text"} onChange={(e)=>{setLinkedin(e.target.value)}} />
                         </div>
 
                         <div className='form-control'>
                             <label><div className='labeled-icon'><img src={spaceX} alt='icon' /></div><div className='labeled-text'>Space X (ex. Twitter)</div></label>
-                            <input value={""} type={"text"} onChange={(e)=>{}} />
+                            <input value={twitterField} type={"text"} onChange={(e)=>{setTwitter(e.target.value)}} />
                         </div>
 
                         <div className='form-control'>
                             <label>App Store link</label>
-                            <input value={""} type={"text"} onChange={(e)=>{}} />
+                            <input value={appleStoreLinkField} type={"text"} onChange={(e)=>{setAppleStoreLink(e.target.value)}} />
                         </div>
 
                         <div className='form-control'>
                             <label>Google Play link</label>
-                            <input value={""} type={"text"} onChange={(e)=>{}} />
+                            <input value={googlePlayLinkField} type={"text"} onChange={(e)=>{setGooglePlayLink(e.target.value)}} />
                         </div>
                     </div>
                 </div>
@@ -152,13 +212,22 @@ const BrandControlsDashboard = () => {
 
                         <div className='form-control'>
                             <label>Select colour for background of chat</label>
-                            <input value={myBusiness.hexColours||"white"} type={"color"} onChange={(e)=>{}} />
+                            <input value={hexColours||"white"} type={"color"} onChange={(e)=>{setHexColours(e.target.value)}} />
                         </div>
                     </div>
                     <div style={{marginTop: 55}} className='col-1x2 business-form'>
+                        {/* <div className='brand-controls-ui'>
+                            <div className='brand-controls-ui'>
+                                <h4>{businessNameField}</h4>
+                            </div>
+
+                            <div className='brand-controls-image'>
+                                <img src={myBusiness.logoUrl} alt='PZ Brand Image' />
+                            </div>
+                        </div> */}
                         <div className='brand-identity-controls'>
                             <div className='device-wrapper'>
-                                <img  style={{backgroundColor: userData ? userData.companyData.hexColours : "black"}} src={deviceBrandControl} alt='PZ Brand Control Device' />
+                                <img style={{backgroundColor: hexColours}} src={deviceBrandControl} alt='PZ Brand Control Device' />
                             </div>
                         </div>
                     </div>
@@ -166,7 +235,7 @@ const BrandControlsDashboard = () => {
 
                 <div className='persistance-controls'>
                     <div className='form-control'>
-                        <Button title={"Save Changes"} special={"special"} />
+                        <Button title={"Save Changes"} special={"special"} onClick={saveChanges} />
                         <Button title={"Cancel"} />
                     </div>
                 </div>

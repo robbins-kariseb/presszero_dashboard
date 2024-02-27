@@ -6,13 +6,104 @@ export const isInSameWeek = (date1, date2) => {
     return daysDifference <= 7;
 }
 
+export const formatSmartInsightMessage = (text) => {
+    const parts = text.split('\n');
+    let message = '';
+    
+    parts.forEach((p,idx)=>{
+        if (p.length > 2) 
+        {
+            p = p.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            p = `${p[0]}${p[1]}` === '##' ? `<h4>${p.replaceAll('##','')}<h4>` : p;
+            p = `${p[0]}${p[1]}` === '- ' ? `${p.replaceAll('- ','→ ')}` : p;
+            if (idx===0) {
+                if (`${p[0]}${p[1]}` === '1.' || `${p[0]}${p[1]}` == '→ ') {
+                    message += `<div class='message-heading'>Here's some information on your question:</div>`;
+                    message += `<div class='message-insight'>${p}</div>`;
+                }
+                else {
+                    message += `<div class='message-heading'>${p}</div>`;
+                }
+            } else {
+                message += `<div class='message-insight'>${p}</div>`;
+            }
+        }
+    })
+
+    return message;
+} 
+
+export const isInSameMonth = (date1, date2) => {
+    return date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear();
+};
+
 /**
  * Extract timeseries data from the given model.
  * @param {*} param0 
  */
+
+export const calculateAverageResponseTime = (dataset) => {
+    const userChatTimes = {};  // Dictionary to store the first time a user chat occurs
+    const responseTimes = [];  // Array to store calculated response times
+    let firstTimeReceived = null;
+
+    dataset.forEach(chat => {
+        const { companyId, createdBy, createdDate } = chat;
+
+        if (createdBy === 'user') {
+            // Store the time of the first user chat
+            userChatTimes[companyId] = new Date(createdDate);
+            if (!firstTimeReceived) {
+                firstTimeReceived = new Date(createdDate);
+            }
+        } else if (createdBy === 'system' && userChatTimes[companyId]) {
+            const systemTime = new Date(createdDate);
+            // Calculate the time difference for system response
+            const userTime = userChatTimes[companyId];
+            const timeDifference = systemTime - userTime;
+
+            // Convert the time difference to hours and push to the response times array
+            const hoursDifference = timeDifference / (1000 * 60 * 60);
+            responseTimes.push(hoursDifference);
+
+            // Reset the user chat time for the next calculation
+            delete userChatTimes[companyId];
+        }
+    });
+
+    // Calculate the average response time
+    const averageResponseTime = responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length;
+
+    const defaultTime = (new Date() - firstTimeReceived) / (1000 * 60 * 60) == NaN ? (new Date() - firstTimeReceived) / (1000 * 60 * 60) : 0;
+
+    return averageResponseTime;
+}
+
+export const calculateAverageTimeToClose = (dataset) => {
+    const userChatTimes = {};  // Dictionary to store the first time a user chat occurs
+    const responseTimes = [];  // Array to store calculated response times
+    let firstTimeReceived = null;
+
+    dataset.forEach(chat => {
+        const { resolvedDate, createdDate } = chat;
+
+        if (resolvedDate) {
+            responseTimes.push(new Date(resolvedDate) - new Date(createdDate))
+        }
+    });
+
+    // Calculate the average response time
+    const averageResponseTime = responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length;
+
+    const defaultTime = (new Date() - firstTimeReceived) / (1000 * 60 * 60) == NaN ? (new Date() - firstTimeReceived) / (1000 * 60 * 60) : 0;
+
+    return averageResponseTime;
+}
+
 export const timeseriesExtract = ({ dataset, key }) => {
     const initial = dataset[key];
     const timeseriesDay = [];
+    const timeseriesWeek = [];
     const timeseriesMonth = [];
     const timeseriesAllTimes = initial;
 
@@ -34,6 +125,10 @@ export const timeseriesExtract = ({ dataset, key }) => {
 
             // Check if createdDate is part of the current month
             if (isInSameWeek(createdDate, currentDate)) {
+                timeseriesWeek.push(e);
+            }
+
+            if (isInSameMonth(createdDate, currentDate)) {
                 timeseriesMonth.push(e);
             }
         }
@@ -45,9 +140,97 @@ export const timeseriesExtract = ({ dataset, key }) => {
     response['timeseriesDay'] = timeseriesDay
     response['timeseriesMonth'] = timeseriesMonth
     response['timeseriesAllTimes'] = timeseriesAllTimes
+
+    response['day'] = timeseriesDay
+    response['week'] = timeseriesWeek
+    response['month'] = timeseriesMonth
     
     return response;
 };
+
+export const formatDateToShort = (dateString) => {
+    const options = { month: 'short', day: 'numeric' };
+    const formattedDate = new Date(dateString).toLocaleDateString(undefined, options);
+    return formattedDate;
+};
+
+export const isSameDay = (date1, date2) => {
+    return date2.getDate() === date1.getDate()
+};
+
+export const listDatesBetween = (startDate, endDate) => {
+    const datesArray = [];
+    let currentDate = new Date(startDate);
+  
+    while (currentDate <= new Date(endDate)) {
+      datesArray.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  
+    return datesArray;
+};
+
+export const getLowerAndUpperBoundDates = ({ dataset, key }) => {
+    const initial = dataset[key];
+
+    let lower = null;
+    let upper = null;
+
+    initial.forEach((e) => {
+        if (e.createdDate) {
+            const current = new Date(e.createdDate);
+            if (!lower || lower > current) {
+                lower = current;
+            } else if (!upper || upper < current) {
+                upper = current;
+            }
+        }
+    });
+
+    console.log({
+        upper, 
+        lower
+    })
+
+    return {
+        upper, 
+        lower
+    }
+};
+
+export const getAvailabilityKey = (dayOfWeek) => {
+    const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    return daysOfWeek[dayOfWeek] + 'Availability';
+}
+
+export const convertHoursToTimeText = (hours) => {
+    // Convert hours to seconds
+    let totalSeconds = Math.round(hours * 3600);
+
+    // Calculate hours, minutes, and seconds
+    let h = Math.floor(totalSeconds / 3600);
+    let m = Math.floor((totalSeconds % 3600) / 60);
+    let s = totalSeconds % 60;
+
+    // Build the time text
+    let timeText = '';
+    
+    if (h > 0) {
+        if (h < 24)
+            timeText += h + 'h ';
+        else
+            timeText += '24+h ';
+    }
+
+    if (m > 0 || h > 0) {
+        timeText += m + 'min ';
+    }
+
+    if (h < 0 || timeText.length < 2) 
+        timeText += s + 'sec';
+
+    return timeText;
+}
 
 export const countryCodes = [
     { name: "United Kingdom", code: "UK" },

@@ -5,66 +5,136 @@ import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   
   const default_data = [
     {
-      name: 'Page A',
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
+        "name": "Feb 5",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
     },
     {
-      name: 'Page B',
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
+        "name": "Feb 6",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
     },
     {
-      name: 'Page C',
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
+        "name": "Feb 7",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
     },
     {
-      name: 'Page D',
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
+        "name": "Feb 8",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
     },
     {
-      name: 'Page E',
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
+        "name": "Feb 9",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
     },
     {
-      name: 'Page F',
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
+        "name": "Feb 10",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
     },
     {
-      name: 'Page G',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
+        "name": "Feb 11",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
     },
-  ];
+    {
+        "name": "Feb 12",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
+    },
+    {
+        "name": "Feb 13",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
+    },
+    {
+        "name": "Feb 14",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
+    },
+    {
+        "name": "Feb 15",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
+    },
+    {
+        "name": "Feb 16",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
+    },
+    {
+        "name": "Feb 17",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
+    },
+    {
+        "name": "Feb 18",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
+    },
+    {
+        "name": "Feb 19",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
+    },
+    {
+        "name": "Feb 20",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
+    },
+    {
+        "name": "Feb 21",
+        "Average Sentiment": 0,
+        "amt": 0,
+        "count": 0
+    },
+    {
+        "name": "Feb 22",
+        "Average Sentiment": "58.9",
+        "amt": 0,
+        "count": 18
+    }
+]
 
-function GenericBarChart ({data, baseName, comparisonName, baseColor, comparisonColor, heading}) {
-    const [chartData] = React.useState(data||default_data)
+function GenericBarChart ({data, keyName, comparisonName, baseColor, comparisonColor, heading}) {
+    const [chartData, setChatData] = React.useState(data||default_data)
+
+    React.useEffect(()=>{
+      setChatData(data);
+    },[data])
 
     return (
       <React.Fragment>
-        <div className='heading'>
+        {heading && <div className='heading'>
           <h4>{heading||"Untitled"}</h4>
-        </div>
+        </div>}
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             width={500}
             height={300}
             data={chartData}
             margin={{
-              top: 5,
-              right: 30,
-              left: 20,
+              top: 0,
+              right: 0,
+              left: 0,
               bottom: 5,
             }}
           >
@@ -73,8 +143,7 @@ function GenericBarChart ({data, baseName, comparisonName, baseColor, comparison
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="pv" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-            <Bar dataKey="uv" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+            <Bar dataKey={keyName} fill="#73b627" activeBar={<Rectangle fill="pink" stroke="blue" />} />
           </BarChart>
         </ResponsiveContainer>
       </React.Fragment>

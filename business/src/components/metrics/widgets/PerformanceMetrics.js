@@ -1,15 +1,23 @@
 import React from 'react'
 import Tab from '../../Tab'
 
-function PerformanceMetrics({title, content}) {
+function PerformanceMetrics({title, content, onTabChange}) {
     const [tab, setTab] = React.useState(0)
+    
+    const handleTabChange = (e) => {
+        setTab(e)
+        onTabChange(e)
+    }
+
     return (
         <div className='widget col-1x4'>
-            <div className='heading'>
-                <h4>{title}</h4>
-            </div>
+            <div className='widget-fixed-section'>
+                <div className='heading'>
+                    <h4>{title}</h4>
+                </div>
 
-            {content}
+                {content}
+            </div>
 
             <div className='widget-footer'>
                 <div className='col-1x3 tab-wrapper time-series-tabs'>
@@ -26,7 +34,7 @@ function PerformanceMetrics({title, content}) {
                                 title: "Month",
                                 onClick: (() => { })
                             }]}
-                        setTab={setTab}
+                        setTab={handleTabChange}
                     />
                 </div>
             </div>

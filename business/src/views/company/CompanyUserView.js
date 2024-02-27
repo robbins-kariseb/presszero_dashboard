@@ -23,6 +23,7 @@ function CompanyUserView() {
         setIndexedViewData,
         universalChangeCounter, 
         setConfirmation,
+        onUniversalChange
     } = React.useContext(AppContext);
     const [isLoading, setIsLoading] = React.useState(true)
     const [API] = React.useState(new QuerySets())
@@ -261,7 +262,11 @@ function CompanyUserView() {
                                                                 heading: "Delete User Account",
                                                                 content: <p>You are about to delete this user account! This action cannot be reverted. Are you sure you want to contine?</p>,
                                                                 cancel: ()=>{},
-                                                                confirm: ()=>{alert("Object was deleted!")},
+                                                                confirm: ()=>{
+                                                                    API.deleteModel({model: "adminUser", id: e.id}).then((res)=>{
+                                                                        onUniversalChange();
+                                                                    })
+                                                                },
                                                             })
                                                         }}
                                                     />
