@@ -14,70 +14,59 @@ const TeamsDashboard = () => {
     const [isLoading,setIsLoading] = React.useState(true)
     const [USERS] = React.useState(new Users())
     const [API] = React.useState(new QuerySets())
-    const [unfilteredData,setUnfilteredData] = React.useState([])
-    const [data,setData] = React.useState([])
-    const [chatData,setChatData] = React.useState([])
-    const [businesses,setBusinesses] = React.useState([])
+    const [selection,setSelection] = React.useState([])
     const [activeUserList,setActiveUserList] = React.useState([])
     const [preview, setPreview] = React.useState(null)
-    const [searchPhrase, setSearchPhrase] = React.useState("")
-    const [tab, setTab] = React.useState(0)
     const [menuTab, setMenuTab] = React.useState(0)
     const [isLoaded, setIsLoaded] = React.useState(false);
-    const [tabMetrics, setTabMetrics] = React.useState({});
+    const [checkAll, setCheckAll] = React.useState(false);
     const [companyId] = React.useState(userData ? userData.userData.companyId : null)
 
     const hidePreview = () => setPreview(null)
 
-    let searchResults = searchPhrase.length < 2 ? [] : data.filter((e) => {
-        const keywords = searchPhrase.split(' ');
-        const itemText = `${e.searchName} ${e.searchCategory}`.toLowerCase();
-    
-        return keywords.every((word) => itemText.includes(word.toLowerCase()));
-    });
+    const handleBulkSelection = (event) => {
+        if (!checkAll) {
+            setSelection(activeUserList)
 
-    if (searchResults.length === 0) searchResults = data;
+            activeUserList.forEach((item)=>{
+                item.checked = true;
+            })
+            setCheckAll(true)
+        } else {
+            setSelection([])
+
+            activeUserList.forEach((item)=>{
+                item.checked = false;
+            })
+            setCheckAll(false)
+        }
+    }
+
+    const handleSelectionToggle = (event, item) => {
+        let list = [];
+        let selected = false;
+
+        selection.forEach((e)=>{
+            if (e.id === item.id) {
+                selected = true;
+            } else {
+                list.push(e)
+            }
+        })
+        
+        item.checked = !selected
+        
+        if (!selected) {
+            list.push(item);
+        }
+        setSelection(list)
+    }
 
     React.useEffect(()=>{
         const init = async ()=>{
-            const dataset = await API.getCompanyStatistics()
             const users = await USERS.listCompanyUsers({companyId: companyId})
-    
             try {
-                setBusinesses(dataset.items.sort((a,b)=> {
-                    return a.totalChats - b.totalChats
-                }).slice().reverse().slice(0, 3));
-
-                const companies = await API.getAllCompanies()
-                companies.items.forEach((e) => {
-                    e.searchName = e.businessName;
-                    e.searchCategory = e.categoryDefault;
-                    e.searchImage = e.logoUrl;
-                });
-                console.log(users)
                 setActiveUserList(users.items)
-                setUnfilteredData(companies.items)
-                setData(companies.items.filter((a)=>{
-                    return a.verified === true;
-                }))
-
-                setTabMetrics({verified: companies.items.filter((a)=>{
-                    return a.verified === true;
-                }).length,
-                unverified: companies.items.filter((a)=>{
-                    return a.verified === false;
-                }).length,
-                requested: companies.items.filter((a)=>{
-                    return a.requested === false;
-                }).length})
-
-                const chats = await API.getAllChatStatistics()
-                chats.items.forEach((e) => {
-                    e.searchName = e.businessName;
-                    e.searchCategory = e.categoryDefault;
-                    e.searchImage = e.logoUrl;
-                });
-                setChatData(chats.items)
             } catch (ex) {
                 console.warn(ex)
             }
@@ -87,35 +76,11 @@ const TeamsDashboard = () => {
     },[API,universalChangeCounter])
 
     React.useEffect(()=>{
-        if (tab === 0) {
-            const dataset = unfilteredData.filter((a)=>{
-                return a.verified === true;
-            })
-
-            setData(dataset)
-        } else if (tab === 1) {
-            const dataset = unfilteredData.filter((a)=>{
-                return a.verified === false;
-            })
-
-            setData(dataset)
-        } else if (tab === 2) {
-            const dataset = unfilteredData.filter((a)=>{
-                return a.unsubscribed === true;
-            })
-
-            setData(dataset)
-        }
-    },[tab,universalChangeCounter])
-
-    React.useEffect(()=>{},[businesses])
-
-    React.useEffect(()=>{
-        setIsLoading(data.length === 0 ||chatData.length === 0 ||businesses.length === 0)
+        setIsLoading(activeUserList.length === 0)
         if (!isLoaded) {
-            setIsLoaded(!(data.length === 0 ||chatData.length === 0 ||businesses.length === 0));
+            setIsLoaded(!(activeUserList.length === 0));
         }
-    },[data,chatData,businesses,universalChangeCounter])
+    },[activeUserList,universalChangeCounter])
 
     return (
         <React.Fragment>
@@ -125,51 +90,53 @@ const TeamsDashboard = () => {
             <PageContainer 
                 pageTitle={'Team'}
                 pageSubtitle={""}
-                searchSpace={data}
+                searchSpace={[]}
                 addons={<div className='col-1x3 tab-wrapper time-series-tabs float-right'>
                     <Button 
                         special={"special"} 
                         title="Invite Users" 
                         onClick={()=>{}} 
                     />
-                    <Button 
-                        special={"dropdown"} 
-                        title={<React.Fragment><span class="material-symbols-outlined">expand_more</span> <span className='text'>Actions</span></React.Fragment>} 
-                        onClick={()=>{}} 
-                        popup={[
-                            {
-                                name: "Send Again",
-                                onClick: ()=>{},
-                            },{
-                                name: "Revoke Invite",
-                                onClick: ()=>{
-                                    
-                                },
-                            },{
-                                name: "Remove",
-                                onClick: ()=>{
-                                    setConfirmation({
-                                        heading: `Delete Accounts`,
-                                        content: <p>This action will remove the user account from our system! Are you sure you want to continue?</p>,
-                                        cancel: ()=>{},
-                                        confirm: ()=>{},
-                                    })
-                                },
-                            }
-                        ]} 
-                    />
-                    <Button 
-                        special={"info"} 
-                        title={<React.Fragment>Selected <small>3</small></React.Fragment>} 
-                    />
+                    {selection.length > 0 && <React.Fragment>
+                        <Button 
+                            special={"dropdown"} 
+                            title={<React.Fragment><span class="material-symbols-outlined">expand_more</span> <span className='text'>Actions</span></React.Fragment>} 
+                            onClick={()=>{}} 
+                            popup={[
+                                {
+                                    name: "Send Again",
+                                    onClick: ()=>{},
+                                },{
+                                    name: "Revoke Invite",
+                                    onClick: ()=>{
+                                        
+                                    },
+                                },{
+                                    name: "Remove",
+                                    onClick: ()=>{
+                                        setConfirmation({
+                                            heading: `Delete Accounts`,
+                                            content: <p>This action will remove the user account from our system! Are you sure you want to continue?</p>,
+                                            cancel: ()=>{},
+                                            confirm: ()=>{},
+                                        })
+                                    },
+                                }
+                            ]} 
+                        />
+                        <Button 
+                            special={"info"} 
+                            title={<React.Fragment>Selected <small>{selection.length}</small></React.Fragment>} 
+                        />
+                        </React.Fragment>}
                 </div>}
             >
                 <div className='col-4x4'>
-                    <div className="scrollable full-width">
+                    <div style={{height: "60vh", maxHeight: "60vh"}} className="scrollable full-width">
                         <table className='business-themed-table'>
                             <thead>
                                 <tr>
-                                    <td style={{width:30}}><input type='checkbox' /></td>
+                                    <td style={{width:30}}><input checked={checkAll} onChange={(event)=>handleBulkSelection(event)} type='checkbox' /></td>
                                     <td>Name</td>
                                     <td>Email</td>
                                     <td>Status</td>
@@ -177,8 +144,8 @@ const TeamsDashboard = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {activeUserList.map((e,idx)=> <tr>
-                                    <td><input type='checkbox' /></td>
+                                {activeUserList.map((e,idx)=> <tr key={idx}>
+                                    <td><input checked={e.checked||false} onChange={(event)=>handleSelectionToggle(event, e)} type='checkbox' /></td>
                                     <td>{e.name} {e.surname}</td>
                                     <td>{e.email}</td>
                                     <td>
