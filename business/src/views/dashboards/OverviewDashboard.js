@@ -12,6 +12,7 @@ import { AppContext } from '../../context/AppProvider';
 import PerformanceMetrics from '../../components/metrics/widgets/PerformanceMetrics';
 import Reports from '../../controllers/reports.controller';
 import GenericBarChart from '../charts/GenericBarChart';
+import WidgetFigure from '../../components/metrics/widgets/WidgetFigure';
 
 const ReportKeys = {
     0: "day",
@@ -68,6 +69,7 @@ const OverviewDashboard = () => {
             if (userData && userData.companyData)
             {
                 const dataset = await API.getCompanyChatMessages({companyId: userData.companyData.id})
+                console.log("############################",dataset)
                 const survey = await API.getFilteredModels({model: "surveyAfterChat", filters: {companyId: userData.companyData.id}})
 
                 try {
@@ -139,7 +141,8 @@ const OverviewDashboard = () => {
                             content={
                                 <div className='metric score-large'>
                                     <div className='score-large'>{CustomerSatisfactionScores[ReportKeys[tab1x1]] ? CustomerSatisfactionScores[ReportKeys[tab1x1]].current : 0}/5</div>
-                                    <div className='score-small positive'>{CustomerSatisfactionScores[ReportKeys[tab1x1]] ? CustomerSatisfactionScores[ReportKeys[tab1x1]].total : 0}</div>
+                                    <WidgetFigure value={CustomerSatisfactionScores[ReportKeys[tab1x1]] ? CustomerSatisfactionScores[ReportKeys[tab1x1]].total : 0} />
+                                    {/* <div className='score-small positive'>{CustomerSatisfactionScores[ReportKeys[tab1x1]] ? CustomerSatisfactionScores[ReportKeys[tab1x1]].total : 0}</div> */}
                                 </div>
                             } 
                         />
@@ -171,7 +174,8 @@ const OverviewDashboard = () => {
                             content={
                                 <div className='metric score-large'>
                                     <div className='score-large'>{averageFirstResponse[ReportKeys[tab1x3]] ? averageFirstResponse[ReportKeys[tab1x3]].time : 0}</div>
-                                    <div className='score-small positive'>{averageFirstResponse[ReportKeys[tab1x3]] ? averageFirstResponse[ReportKeys[tab1x3]].total : 0}</div>
+                                    <WidgetFigure value={averageFirstResponse[ReportKeys[tab1x3]] ? averageFirstResponse[ReportKeys[tab1x3]].total : 0} />
+                                    {/* <div className='score-small positive'>{averageFirstResponse[ReportKeys[tab1x3]] ? averageFirstResponse[ReportKeys[tab1x3]].total : 0}</div> */}
                                 </div>
                             } 
                         />
@@ -182,7 +186,8 @@ const OverviewDashboard = () => {
                             content={
                                 <div className='metric score-large'>
                                     <div className='score-large'>{AverageTimeToClose[ReportKeys[tab1x4]] ? AverageTimeToClose[ReportKeys[tab1x4]].time : 0}</div>
-                                    <div className='score-small negative'>{AverageTimeToClose[ReportKeys[tab1x4]] ? AverageTimeToClose[ReportKeys[tab1x4]].time : 0}</div>
+                                    <WidgetFigure value={AverageTimeToClose[ReportKeys[tab1x4]] ? AverageTimeToClose[ReportKeys[tab1x4]].time : 0} />
+                                    {/* <div className='score-small negative'>{AverageTimeToClose[ReportKeys[tab1x4]] ? AverageTimeToClose[ReportKeys[tab1x4]].time : 0}</div> */}
                                 </div>
                             } 
                         />
@@ -208,7 +213,8 @@ const OverviewDashboard = () => {
                             content={
                                 <div className='metric score-large'>
                                     <div className='score-large'>{inboundChatsReceived[ReportKeys[tab1x6]] ? inboundChatsReceived[ReportKeys[tab1x6]].current : 0}</div>
-                                    <div className='score-small positive'>{inboundChatsReceived[ReportKeys[tab1x6]] ? inboundChatsReceived[ReportKeys[tab1x6]].total : 0}</div>
+                                    <WidgetFigure value={inboundChatsReceived[ReportKeys[tab1x6]] ? inboundChatsReceived[ReportKeys[tab1x6]].total : 0} />
+                                    {/* <div className='score-small positive'>{inboundChatsReceived[ReportKeys[tab1x6]] ? inboundChatsReceived[ReportKeys[tab1x6]].total : 0}</div> */}
                                 </div>
                             } 
                         />
@@ -236,7 +242,8 @@ const OverviewDashboard = () => {
                             content={
                                 <div className='metric score-large'>
                                     <div className='score-large'>{customersAtRiskOfChurn[ReportKeys[tab1x8]] ? customersAtRiskOfChurn[ReportKeys[tab1x8]].current : 0}</div>
-                                    <div className='score-small negative'>{customersAtRiskOfChurn[ReportKeys[tab1x8]] ? customersAtRiskOfChurn[ReportKeys[tab1x8]].total : 0}</div>
+                                    <WidgetFigure inverted={true} value={customersAtRiskOfChurn[ReportKeys[tab1x8]] ? customersAtRiskOfChurn[ReportKeys[tab1x8]].total : 0} />
+                                    {/* <div className='score-small negative'>{customersAtRiskOfChurn[ReportKeys[tab1x8]] ? customersAtRiskOfChurn[ReportKeys[tab1x8]].total : 0}</div> */}
                                 </div>
                             } 
                         />

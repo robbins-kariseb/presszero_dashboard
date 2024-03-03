@@ -69,9 +69,9 @@ export default class Reports {
   AverageFirstResponseTimeReport = ({ dataset }) => {
     const time_series = timeseriesExtract({dataset: {dataset}, key: "dataset"})
 
-    const artDay = calculateAverageResponseTime(time_series.day);
-    const artWeek = calculateAverageResponseTime(time_series.week);
-    const artMonth = calculateAverageResponseTime(time_series.month);
+    const artDay = calculateAverageResponseTime(time_series.day.filter((e)=>e.serial !== 'AutoReply'));
+    const artWeek = calculateAverageResponseTime(time_series.week.filter((e)=>e.serial !== 'AutoReply'));
+    const artMonth = calculateAverageResponseTime(time_series.month.filter((e)=>e.serial !== 'AutoReply'));
     console.log({
         day: {
             time: artDay,
