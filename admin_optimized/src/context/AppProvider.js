@@ -92,7 +92,7 @@ const AppProvider = ({ children }) => {
     if (companyList.length === 0) {
       handleCompanyStream()
     }
-  }, []); 
+  }, [universalChangeCounter]); 
 
   // Pass getters and setters down to child components.
   return (
