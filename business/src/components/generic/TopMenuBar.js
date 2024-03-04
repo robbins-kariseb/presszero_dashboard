@@ -28,7 +28,7 @@ function TopMenuBar({setTab}) {
                         {userData && userData.companyData && <img src={userData.companyData.logoUrl||logo} alt={''} />}
                         {!userData || !userData.companyData && <img src={logo} alt={''} />}
                     </div>
-                    <h4>{userData && userData.companyData && userData.companyData.businessName}</h4>
+                    <h4>{((userData && userData.companyData && userData.companyData.businessName)||"Loading").slice(0,11)}...</h4>
                 </div>
                 <div className='col-1x3 tab-wrapper menu-tabs'>
                     <center>

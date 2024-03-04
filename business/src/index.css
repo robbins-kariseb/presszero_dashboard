@@ -93,6 +93,33 @@ body {
 .confirmation-box .mini-window .col-1x2 .button {
   width: 100%;
   text-align: center;
+  display: block;
+}
+
+.mini-form-banner.full-width img {
+  width: 100%;
+}
+
+.mini-form-banner.full-width {
+  width: 100%;
+}
+
+.mini-form {
+  text-align: center;
+}
+
+.mini-form .form-control label {
+  margin-left: 10px;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.mini-form .heading {
+  padding: 10px;
+}
+
+.mini-form .heading h4 {
+  font-size: 25px;
 }
 
 .form-classic .form-control select {
@@ -991,7 +1018,7 @@ widget-container .title-wrapper h4 {
 }
 
 .col-1x2.logo-wrapper img {
-  width: auto;
+  width: 60%;
 }
 
 .form-control label {
@@ -1407,6 +1434,8 @@ table.business-themed-table td .inference-control .positive-icon {
 }
 
 .button.icon-special {
+  position: relative;
+  top: 0px;
   width: 25px;
   padding: 10px;
   height: 25px;
@@ -1414,6 +1443,21 @@ table.business-themed-table td .inference-control .positive-icon {
   border: none;
   background: #f7f7f7;
   z-index: inherit;
+}
+
+.mini-form-banner.full-width .heading strong {
+  padding: 5px;
+}
+
+.mini-form .heading strong {
+  width: auto;
+  display: block;
+  padding: 6px;
+  background: #1a4136;
+  color: white;
+  border-radius: 15px;
+  margin-left: 10px;
+  margin-top: 10px;
 }
 
 table.business-themed-table td .inference-control .neutral-icon {

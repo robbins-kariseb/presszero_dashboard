@@ -247,11 +247,11 @@ function CompanyReportsView() {
                             <h3>Company Management</h3>
                         </div>
                         <div className='list block'>
-                            {!indexedViewData.verified && <Button special={"icon-button"} icon={<span class="material-symbols-outlined">verified</span>} title="Verify Company" />}
-                            {indexedViewData.verified && <Button special={"icon-button"} icon={<span class="material-symbols-outlined">verified</span>} title="Unverify Company" />}
+                            {!indexedViewData.verified && <Button special={"icon-button"} icon={<span  className="material-symbols-outlined">verified</span>} title="Verify Company" />}
+                            {indexedViewData.verified && <Button special={"icon-button"} icon={<span  className="material-symbols-outlined">verified</span>} title="Unverify Company" />}
 
-                            <Button onClick={handleDelete} special={"icon-button"} icon={<span class="material-symbols-outlined">delete</span>} title="Remove Company" />
-                            <Button special={"icon-button"} icon={<span class="material-symbols-outlined">add</span>}  title="Add Category" />
+                            <Button onClick={handleDelete} special={"icon-button"} icon={<span  className="material-symbols-outlined">delete</span>} title="Remove Company" />
+                            <Button special={"icon-button"} icon={<span  className="material-symbols-outlined">add</span>}  title="Add Category" />
                         </div>
                     </div>
                     <div className='widget col-1x4'>
@@ -259,7 +259,7 @@ function CompanyReportsView() {
                             <h3>Profile Management</h3>
                         </div>
                         <div className='list block'>
-                            <Button onClick={()=>setPreview({item:indexedViewData, type:"edit"})} special={"icon-button"} icon={<span class="material-symbols-outlined">edit</span>} title="Edit Profile" />
+                            <Button onClick={()=>setPreview({item:indexedViewData, type:"edit"})} special={"icon-button"} icon={<span  className="material-symbols-outlined">edit</span>} title="Edit Profile" />
                         </div>
                     </div>
                 </div>

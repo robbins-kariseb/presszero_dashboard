@@ -18,14 +18,14 @@ export const formatSmartInsightMessage = (text) => {
             p = `${p[0]}${p[1]}` === '- ' ? `${p.replaceAll('- ','→ ')}` : p;
             if (idx===0) {
                 if (`${p[0]}${p[1]}` === '1.' || `${p[0]}${p[1]}` == '→ ') {
-                    message += `<div class='message-heading'>Here's some information you may find helpful:</div>`;
-                    message += `<div class='message-insight'>${p}</div>`;
+                    message += `<div  className='message-heading'>Here's some information you may find helpful:</div>`;
+                    message += `<div  className='message-insight'>${p}</div>`;
                 }
                 else {
-                    message += `<div class='message-heading'>${p}</div>`;
+                    message += `<div  className='message-heading'>${p}</div>`;
                 }
             } else {
-                message += `<div class='message-insight'>${p}</div>`;
+                message += `<div  className='message-insight'>${p}</div>`;
             }
         }
     })

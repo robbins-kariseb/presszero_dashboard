@@ -92,7 +92,7 @@ function NewUserForm ({ item, handleClose }) {
             <div className="mini-heading flex">
                 <div className="titles flex">
                     <div className='popup-controls' onClick={handleClose}>
-                        <span class="material-symbols-outlined">close</span>
+                        <span className="material-symbols-outlined">close</span>
                     </div>
                     <div className='block'>
                         <h4>{name||"New User"}</h4>
@@ -111,7 +111,7 @@ function NewUserForm ({ item, handleClose }) {
                                     </div>
                                     <div className='col-1x4'>
                                         <div style={{position:"relative", top:-15, left: -10}}>
-                                            <Button onClick={onSaveChanges} special={"icon-button text-align"} icon={<span class="material-symbols-outlined">save</span>} title="Save Changes" />
+                                            <Button onClick={onSaveChanges} special={"icon-button text-align"} icon={<span className="material-symbols-outlined">save</span>} title="Save Changes" />
                                         </div>
                                     </div>
                                 </div>

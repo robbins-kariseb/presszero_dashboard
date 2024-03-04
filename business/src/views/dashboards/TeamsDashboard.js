@@ -7,6 +7,9 @@ import Button from '../../components/Button';
 import NewCompanyForm from '.././forms/NewCompanyForm';
 import { AppContext } from '../../context/AppProvider';
 import Users from '../../controllers/user.controller';
+import TeamBanner from "../../images/invite-team-banner.png"
+import SuccessIcon from "../../images/success-icon.png"
+import WarningIcon from "../../images/warning-icon.png"
 
 
 const TeamsDashboard = () => {
@@ -95,28 +98,87 @@ const TeamsDashboard = () => {
                     <Button 
                         special={"special"} 
                         title="Invite Users" 
-                        onClick={()=>{}} 
+                        onClick={()=>{
+                            setConfirmation({
+                                heading: ``,
+                                content: <div className='mini-form'>
+                                    <div className='mini-form-banner full-width'>
+                                        <img src={TeamBanner} alt='PZ Teams Banner' />
+                                    </div>
+                                    <div className='heading'>
+                                        <h4>Invite your team</h4>
+                                        <p>You’ve created a new project! Invite colleagues to collaborate on this project.</p>
+                                    </div>
+                                    <div className='form'>
+                                        <div className='form-control'>
+                                            <label>Enter email</label>
+                                            <input type={"email"} value={null} />
+                                        </div>
+                                    </div>
+                                </div>,
+                                cancel: ()=>{},
+                                confirm: ()=>{},
+                            })
+                        }} 
                     />
                     {selection.length > 0 && <React.Fragment>
                         <Button 
                             special={"dropdown"} 
-                            title={<React.Fragment><span class="material-symbols-outlined">expand_more</span> <span className='text'>Actions</span></React.Fragment>} 
+                            title={<React.Fragment><span  className="material-symbols-outlined">expand_more</span> <span className='text'>Actions</span></React.Fragment>} 
                             onClick={()=>{}} 
                             popup={[
                                 {
                                     name: "Send Again",
-                                    onClick: ()=>{},
+                                    onClick: ()=>{
+                                        setConfirmation({
+                                            heading: ``,
+                                            content: <div className='mini-form'>
+                                                <div style={{width: "50%", margin: "auto"}} className='mini-form-banner full-width'>
+                                                    <img style={{width: "35%"}} src={WarningIcon} alt='PZ Teams Banner' />
+                                                </div>
+                                                <div className='heading'>
+                                                    <h4>Are you sure?</h4>
+                                                    <p>You are about to Re-send invitations to the following user(s):</p>
+                                                    {selection.map((e)=><strong>{e.email}</strong>)}
+                                                </div>
+                                            </div>,
+                                            cancel: ()=>{},
+                                            confirm: ()=>{},
+                                        })
+                                    },
                                 },{
                                     name: "Revoke Invite",
                                     onClick: ()=>{
-                                        
+                                        setConfirmation({
+                                            heading: ``,
+                                            content: <div className='mini-form'>
+                                                <div style={{width: "50%", margin: "auto"}} className='mini-form-banner full-width'>
+                                                    <img style={{width: "35%"}} src={WarningIcon} alt='PZ Teams Banner' />
+                                                </div>
+                                                <div className='heading'>
+                                                    <h4>Are you sure?</h4>
+                                                    <p>You are about to Revoke the invitation for the following user(s):</p>
+                                                    {(selection||[]).map((e)=><strong>{e.email}</strong>)}
+                                                </div>
+                                            </div>,
+                                            cancel: ()=>{},
+                                            confirm: ()=>{},
+                                        })
                                     },
                                 },{
                                     name: "Remove",
                                     onClick: ()=>{
                                         setConfirmation({
-                                            heading: `Delete Accounts`,
-                                            content: <p>This action will remove the user account from our system! Are you sure you want to continue?</p>,
+                                            heading: ``,
+                                            content: <div className='mini-form'>
+                                                <div style={{width: "50%", margin: "auto"}} className='mini-form-banner full-width'>
+                                                    <img style={{width: "35%"}} src={WarningIcon} alt='PZ Teams Banner' />
+                                                </div>
+                                                <div className='heading'>
+                                                    <h4>Are you sure?</h4>
+                                                    <p>Do you really want to remove these members? This process cannot be undone</p>
+                                                </div>
+                                            </div>,
                                             cancel: ()=>{},
                                             confirm: ()=>{},
                                         })
@@ -161,22 +223,60 @@ const TeamsDashboard = () => {
                                     <td>
                                         <Button 
                                             special={"icon-special"} 
-                                            title={<span class="material-symbols-outlined">more_vert</span>} 
+                                            title={<span  className="material-symbols-outlined">more_vert</span>} 
                                             popup={[
                                                 {
                                                     name: "Send Again",
-                                                    onClick: ()=>{},
+                                                    onClick: ()=>{
+                                                        setConfirmation({
+                                                            heading: ``,
+                                                            content: <div className='mini-form'>
+                                                                <div style={{width: "50%", margin: "auto"}} className='mini-form-banner full-width'>
+                                                                    <img style={{width: "35%"}} src={WarningIcon} alt='PZ Teams Banner' />
+                                                                </div>
+                                                                <div className='heading'>
+                                                                    <h4>Are you sure?</h4>
+                                                                    <p>You are about to Re-send invitations to the following user(s):</p>
+                                                                    <strong>{e.email}</strong>
+                                                                </div>
+                                                            </div>,
+                                                            cancel: ()=>{},
+                                                            confirm: ()=>{},
+                                                        })
+                                                    },
                                                 },{
                                                     name: "Revoke Invite",
                                                     onClick: ()=>{
-                                                        
+                                                        setConfirmation({
+                                                            heading: ``,
+                                                            content: <div className='mini-form'>
+                                                                <div style={{width: "50%", margin: "auto"}} className='mini-form-banner full-width'>
+                                                                    <img style={{width: "35%"}} src={WarningIcon} alt='PZ Teams Banner' />
+                                                                </div>
+                                                                <div className='heading'>
+                                                                    <h4>Are you sure?</h4>
+                                                                    <p>You are about to Revoke the invitation for the following user(s):</p>
+                                                                    <strong>{e.email}</strong>
+                                                                </div>
+                                                            </div>,
+                                                            cancel: ()=>{},
+                                                            confirm: ()=>{},
+                                                        })
                                                     },
                                                 },{
                                                     name: "Remove",
                                                     onClick: ()=>{
                                                         setConfirmation({
-                                                            heading: `Delete ${e.name}'s Account`,
-                                                            content: <p>This action will remove the user account from our system! Are you sure you want to continue?</p>,
+                                                            heading: ``,
+                                                            content: <div className='mini-form'>
+                                                                <div style={{width: "50%", margin: "auto"}} className='mini-form-banner full-width'>
+                                                                    <img style={{width: "35%"}} src={WarningIcon} alt='PZ Teams Banner' />
+                                                                </div>
+                                                                <div className='heading'>
+                                                                    <h4>Are you sure?</h4>
+                                                                    <p>Do you really want to remove these members? This process cannot be undone</p>
+                                                                </div>
+                                                            </div>,
                                                             cancel: ()=>{},
                                                             confirm: ()=>{
                                                                 API.deleteModel({model: "adminUser", id: e.id}).then((res)=>{

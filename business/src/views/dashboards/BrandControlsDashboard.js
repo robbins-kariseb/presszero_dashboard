@@ -33,6 +33,7 @@ const BrandControlsDashboard = () => {
     const [businessHighlightsField, setBusinessHighlights] = React.useState(myBusiness.highlights)
     const [phoneField, setPhoneField] = React.useState(myBusiness.phone)
     const [websiteUrlField, setWebsiteUrl] = React.useState(myBusiness.websiteUrl)
+    const [logoUrl, setLogoUrl] = React.useState(myBusiness.logoUrl)
 
     const [rgbColours, setRgbColours] = React.useState(myBusiness.rgbColours)
     const [hexColours, setHexColours] = React.useState(myBusiness.hexColours)
@@ -43,6 +44,8 @@ const BrandControlsDashboard = () => {
     const [instagramField, setInstagram] = React.useState("")
     const [appleStoreLinkField, setAppleStoreLink] = React.useState("")
     const [googlePlayLinkField, setGooglePlayLink] = React.useState("")
+    const [isUploadingLogo, setIsUploadingLogo] = React.useState(false)
+    const inputFile = React.useRef(null)
 
     const saveChanges = async () => {
         await API.updateModel({model: "socialLinks", fields: {
@@ -60,6 +63,9 @@ const BrandControlsDashboard = () => {
             highlights: businessHighlightsField,
             phone: phoneField,
             websiteUrl: websiteUrlField,
+            logoUrl: logoUrl,
+            rgbColours: rgbColours,
+            hexColours: hexColours,
         }, id: myBusiness.id})
 
         if (userData.companyData) {
@@ -68,12 +74,82 @@ const BrandControlsDashboard = () => {
             userData.companyData.highlights = businessHighlightsField;
             userData.companyData.phone = phoneField;
             userData.companyData.websiteUrl = websiteUrlField;
+            userData.companyData.rgbColours = rgbColours;
+            userData.companyData.hexColours = hexColours;
+            userData.companyData.logoUrl = logoUrl;
 
             localStorage.setItem('user_data', JSON.stringify(userData))
         }
 
         handleAlert("Your changes have been updated successfully!")
     }
+
+    const handleColorChange = (hex) => {
+        // Function to convert HEX to RGB
+        const hexToRgb = (hex) => {
+            // Remove the hash (#) if present
+            hex = hex.replace(/^#/, '');
+    
+            // Parse the RGB components
+            const bigint = parseInt(hex, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+    
+            // Return the RGB values as a string
+            return `${r},${g},${b}`;
+        };
+    
+        // Set the HEX color
+        setHexColours(hex);
+    
+        // Convert HEX to RGB and set the state
+        const rgbColor = hexToRgb(hex);
+        setRgbColours(rgbColor);
+    };
+
+    const handleImageUpload = () => {
+        // Programmatically trigger click on the file input element
+        inputFile.current.click();
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+    
+        // Check if a file is selected
+        if (!file) {
+          return;
+        }
+    
+        // Check if the selected file is an image
+        if (!file.type.startsWith('image/')) {
+            handleWarning('Please select an image file.');
+          return;
+        }
+    
+        // Create an HTML Image element to check the image dimensions
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+    
+        img.onload = () => {
+          // Check if the image dimensions are 256x256 or 512x512
+          if (img.width === 256 && img.height === 256 || img.width === 512 && img.height === 512) {
+            setIsUploadingLogo(true)
+            // Convert the image to a base64 string with dataURL
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                API.uploadFile({base64: reader.result}).then((res)=>{
+                    setLogoUrl(res.fileUri)
+                    setIsUploadingLogo(false)
+                    handleAlert('The company Logo has been attached successfully!');
+                })
+            };
+            reader.readAsDataURL(file);
+          } else {
+            handleWarning('Please select an image with dimensions 256x256 or 512x512.');
+          }
+        };
+    };
 
     const hidePreview = () => setPreview(null)
 
@@ -196,11 +272,15 @@ const BrandControlsDashboard = () => {
                             <label>Select company logo</label>
                             <div className='col-2x2 company-logo-control'>
                                 <div className='col-1x2 logo-wrapper'>
-                                    <img src={myBusiness.logoUrl} alt={myBusiness.businessName} />
+                                    <img src={logoUrl} alt={myBusiness.businessName} />
                                 </div>
                                 <div className='col-1x2 logo-control-wrapper'>
                                     <div className='heading'>
-                                        <Button title={"Choose logo"} />
+                                        {!isUploadingLogo && <React.Fragment>
+                                            <input style={{display: "none"}} ref={inputFile} type="file" accept="image/*" onChange={handleFileChange} />
+                                            <Button onClick={handleImageUpload} title={"Choose logo"} />
+                                        </React.Fragment>}
+                                        {isUploadingLogo && <img style={{width: 30}} src={"https://media.tenor.com/t5DMW5PI8mgAAAAi/loading-green-loading.gif"} alt="Logo Preview" />}
                                     </div>
                                     <div className='heading'>
                                         <p>Recommended dimensions of 256x256 or 512x512</p>
@@ -212,7 +292,7 @@ const BrandControlsDashboard = () => {
 
                         <div className='form-control'>
                             <label>Select colour for background of chat</label>
-                            <input value={hexColours||"white"} type={"color"} onChange={(e)=>{setHexColours(e.target.value)}} />
+                            <input value={hexColours||"white"} type={"color"} onChange={(e)=>{handleColorChange(e.target.value)}} />
                         </div>
                     </div>
                     <div style={{marginTop: 55}} className='col-1x2 business-form'>

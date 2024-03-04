@@ -18,14 +18,14 @@ function RouteControl () {
         <div className="App">
           {notification&& notification.length > 0 && <div className='notifications-wrapper group heading status-tool-bar'>
               <p className="notification-message">{notification}</p>
-              <div class="active-subscription">
-                <div class="inner-control"></div>
+              <div  className="active-subscription">
+                <div  className="inner-control"></div>
               </div>
             </div>}
           {warning&& warning.length > 0 && <div className='warning-wrapper group heading status-tool-bar'>
               <p className="warning-message">{warning}</p>
-              <div class="active-subscription">
-                <div class="inner-control"></div>
+              <div  className="active-subscription">
+                <div  className="inner-control"></div>
               </div>
             </div>}
           {confirmation && <div className='confirmation-popup'>

@@ -52,6 +52,33 @@ export default class Users  {
         });
     }
 
+    listCompanyInvitations = async ({companyId}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "filters": {
+              "companyId": companyId
+            }
+          });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/filter/businessCustomerInvitations`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
     createAdminUser = async ({companyId, accessGroup, name, surname, dob, gender, email, password, image, phoneNumber, country, timezone, delta}) => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);

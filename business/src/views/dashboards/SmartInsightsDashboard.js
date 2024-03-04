@@ -113,7 +113,7 @@ const SmartInsightsDashboard = () => {
                                 <p>Start searching. Your requests will be here.</p>
                             </div>
                         </div>}
-                        {smartInsights.map((e, idx)=><div key={idx} onClick={()=>setTopic(e)} className='insight-wrapper'>
+                        {smartInsights.map((e, idx)=><div style={{border: topic===e ? "2px solid #39574F" : "none"}} key={idx} onClick={()=>setTopic(e)} className='insight-wrapper'>
                             <div className='heading'>{e.title}</div>
                         </div>)}
                     </div>

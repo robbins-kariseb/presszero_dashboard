@@ -253,7 +253,7 @@ function CompanyReport({ item, popupType, handleClose }) {
             <div className="mini-heading flex">
                 <div className="titles flex">
                     <div className='popup-controls' onClick={handleClose}>
-                        <span class="material-symbols-outlined">close</span>
+                        <span  className="material-symbols-outlined">close</span>
                     </div>
                     <div className='block'>
                         <h4>{COMPANY_REPORTS[popupType].name}</h4>
@@ -371,11 +371,11 @@ function CompanyReport({ item, popupType, handleClose }) {
                                 />}
                                 {!isNewIntegration && <div className='widget col-3x3'>
                                     {integrationList.map((e, idx) => <IntegrationWidget key={idx} item={e} logo={zendeskLogo} />)}
-                                    <div onClick={()=>setIsNewIntegration(true)} class="col-1x3 integration-item">
-                                        <div class="logo-wrapper">
+                                    <div onClick={()=>setIsNewIntegration(true)}  className="col-1x3 integration-item">
+                                        <div  className="logo-wrapper">
                                             <img src={"https://as1.ftcdn.net/jpg/01/09/34/96/220_F_109349657_6BLNYxVVSBLQxwXjJ9n05OAuHVOZk8lh.jpg"} alt="zendesk" />
                                         </div>
-                                        <div class="heading-wrapper">
+                                        <div  className="heading-wrapper">
                                             <h4>New Integration</h4>
                                         </div>
                                     </div>
@@ -390,23 +390,23 @@ function CompanyReport({ item, popupType, handleClose }) {
                                     setOutlookEmail={setOutlookEmail}
                                 />}
                                 {!isNewIntegration && <div className='widget col-3x3'>
-                                    {outlookList.map((e, idx) => <div class="col-1x3 integration-item">
-                                        <div class="logo-wrapper">
+                                    {outlookList.map((e, idx) => <div  className="col-1x3 integration-item">
+                                        <div  className="logo-wrapper">
                                             <img src={outlookLogo} alt="zendesk" />
                                         </div>
-                                        <div class="heading metric-heading">
+                                        <div  className="heading metric-heading">
                                             <div className='heading'>
                                                 <h4>Status: {e.status}</h4>
                                                 <h4>Last Sync: {e.createdDate}</h4>
                                             </div>
-                                            <div class="hint"><center>{(e.email).split(" ")[0]}/{e.userCode}</center></div>
+                                            <div  className="hint"><center>{(e.email).split(" ")[0]}/{e.userCode}</center></div>
                                         </div>
                                     </div>)}
-                                    <div onClick={()=>setIsNewIntegration(true)} class="col-1x3 integration-item">
-                                        <div class="logo-wrapper">
+                                    <div onClick={()=>setIsNewIntegration(true)}  className="col-1x3 integration-item">
+                                        <div  className="logo-wrapper">
                                             <img src={"https://as1.ftcdn.net/jpg/01/09/34/96/220_F_109349657_6BLNYxVVSBLQxwXjJ9n05OAuHVOZk8lh.jpg"} alt="zendesk" />
                                         </div>
-                                        <div class="heading-wrapper">
+                                        <div  className="heading-wrapper">
                                             <h4>New Integration</h4>
                                         </div>
                                     </div>
@@ -414,16 +414,16 @@ function CompanyReport({ item, popupType, handleClose }) {
                             </div>}
                             {popupType === "presszero_integration"  && <div className='form-classic integration-controls'>
                                 <div className='widget col-3x3'>
-                                    <div class="col-1x3 integration-item">
-                                        <div class="logo-wrapper">
+                                    <div  className="col-1x3 integration-item">
+                                        <div  className="logo-wrapper">
                                             <img src={presszeroLogo} alt="zendesk" />
                                         </div>
-                                        <div class="heading metric-heading">
+                                        <div  className="heading metric-heading">
                                             <div className='heading'>
                                                 <h4>Queries: {"100"}</h4>
                                                 <h4>Last Sync: {(new Date()).toTimeString()}</h4>
                                             </div>
-                                            <div class="hint"><center>{(item.businessName||"System").split(" ")[0]}/{item.categoryDefault}</center></div>
+                                            <div  className="hint"><center>{(item.businessName||"System").split(" ")[0]}/{item.categoryDefault}</center></div>
                                         </div>
                                     </div>
                                 </div>

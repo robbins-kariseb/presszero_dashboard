@@ -92,6 +92,7 @@ body {
 .confirmation-box .mini-window .col-1x2 .button {
   width: 100%;
   text-align: center;
+  display: block;
 }
 
 .form-classic .form-control select {

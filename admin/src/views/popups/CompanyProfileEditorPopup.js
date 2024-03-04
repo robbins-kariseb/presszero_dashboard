@@ -350,7 +350,7 @@ function CompanyProfileEditorPopup({ item, popupType, handleClose }) {
             <div className="mini-heading flex">
                 <div className="titles flex">
                     <div className='popup-controls' onClick={handleClose}>
-                        <span class="material-symbols-outlined">close</span>
+                        <span className="material-symbols-outlined">close</span>
                     </div>
                     <div className='block'>
                         <h4>{businessName}</h4>
@@ -374,7 +374,7 @@ function CompanyProfileEditorPopup({ item, popupType, handleClose }) {
                                         </div>
                                         <div className='col-1x4'>
                                             <div style={{ position: "relative", top: -15, left: -10 }}>
-                                                <Button onClick={onSaveChanges} special={"icon-button text-align"} icon={<span class="material-symbols-outlined">save</span>} title="Save Changes" />
+                                                <Button onClick={onSaveChanges} special={"icon-button text-align"} icon={<span className="material-symbols-outlined">save</span>} title="Save Changes" />
                                             </div>
                                         </div>
                                     </div>
@@ -438,9 +438,9 @@ function CompanyProfileEditorPopup({ item, popupType, handleClose }) {
                                     <div className='col-2x2 inline-render flex-box'>
                                         {businessHours.map((e, idx) => <div key={idx} className='form-control'>
                                             <h5>{e.title}</h5>
-                                            <label class="switch">
+                                            <label  className="switch">
                                                 <input checked={e.value} onChange={(m) => e.setValue(m.target.checked)} type="checkbox" />
-                                                <span class="slider round"></span>
+                                                <span  className="slider round"></span>
                                             </label>
                                             <label>Opens</label>
                                             <input type={"time"} onChange={(m) => e.setStart(m.target.value)} value={e.start} />
@@ -460,7 +460,7 @@ function CompanyProfileEditorPopup({ item, popupType, handleClose }) {
                                         </div>
                                         <div className='col-1x4'>
                                             <div style={{ position: "relative", top: -15, left: -10 }}>
-                                                <Button onClick={onVerifyCompany} special={"icon-button text-align"} icon={<span class="material-symbols-outlined">save</span>} title="Save Changes" />
+                                                <Button onClick={onVerifyCompany} special={"icon-button text-align"} icon={<span  className="material-symbols-outlined">save</span>} title="Save Changes" />
                                             </div>
                                         </div>
                                     </div>
@@ -488,7 +488,7 @@ function CompanyProfileEditorPopup({ item, popupType, handleClose }) {
                                         </div>
                                         <div className='col-1x4'>
                                             <div style={{ position: "relative", top: -15, left: -10 }}>
-                                                <Button onClick={onSaveChanges} special={"icon-button text-align"} icon={<span class="material-symbols-outlined">save</span>} title="Save Changes" />
+                                                <Button onClick={onSaveChanges} special={"icon-button text-align"} icon={<span  className="material-symbols-outlined">save</span>} title="Save Changes" />
                                             </div>
                                         </div>
                                     </div>

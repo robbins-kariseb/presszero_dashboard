@@ -117,9 +117,9 @@ const OverviewDashboard = () => {
     },[chatData])
 
     React.useEffect(()=>{
-        setIsLoading(chatData.length === 0)
+        setIsLoading((chatData||[{}]).length === 0)
         if (!isLoaded) {
-            setIsLoaded(chatData.length !== 0);
+            setIsLoaded((chatData||[{}]).length !== 0);
         }
     },[data,chatData,universalChangeCounter])
 
