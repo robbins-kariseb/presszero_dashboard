@@ -55,7 +55,7 @@ const AppProvider = ({ children }) => {
     if (verification === undefined) {
       // Handle password Sign In
       const user = await USERS.signIn({password,username})
-      if (user.response === "successful" && user.userData && (user.userData.accessGroup === "super-user" || user.userData.accessGroup === "admin" || user.userData.accessGroup === "ghost-user")) {
+      if (user.response === "successful" && user.userData && (user.userData.accessGroup === "super-user" || user.userData.accessGroup === "ghost-user")) {
         localStorage.setItem('user_data', JSON.stringify(user))
         return true;
       } else {
