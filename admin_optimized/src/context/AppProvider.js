@@ -89,9 +89,14 @@ const AppProvider = ({ children }) => {
       if (!window.location.href.includes("/login")) window.location.href = "/login";
     }
 
-    if (companyList.length === 0) {
-      handleCompanyStream()
-    }
+    // if (companyList.length === 0) {
+    //   handleCompanyStream()
+    // }
+  }, []); 
+
+  
+  React.useEffect(() => {
+    handleCompanyStream()
   }, [universalChangeCounter]); 
 
   // Pass getters and setters down to child components.
