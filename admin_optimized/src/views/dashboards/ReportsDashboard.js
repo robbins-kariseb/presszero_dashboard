@@ -147,18 +147,19 @@ const ReportsDashboard = () => {
                         <div className='report-heading'>
                             <h4>Press Zero Campaign Overview</h4>
                         </div>
-                        <div className='col-2x2 chart-container'>
+                        {/* <div className='col-2x2 chart-container'>
                             <div className='col-1x2 chart-wrapper'>
                                 <SpecifiedDomainRadarChart heading={"Distribution of Subscribed Companies"} />
                             </div>
                             <div className='col-1x2 chart-wrapper'>
                                 <SpecifiedDomainRadarChart heading={"High Volume Categories"} />
                             </div>
-                        </div>
+                        </div> */}
                         <div className='col-2x2 chart-container'>
-                            <div style={{width: "100%"}} className='col-1x2 chart-wrapper'>
+                            {/* <div style={{width: "100%"}} className='col-1x2 chart-wrapper'>
                                 <GenericBarChart heading={"Subscriptions by Month"} />
-                            </div>
+                            </div> */}
+                            <h4>Reports pending Implementation.</h4>
                         </div>
                     </div>
                 </div>
