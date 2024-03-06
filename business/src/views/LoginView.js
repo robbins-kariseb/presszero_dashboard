@@ -29,6 +29,20 @@ function LoginView() {
             }, 5000);
         }
     }
+
+    const handleMagicSignIn = async (username, accessKey) => {
+        const isAuthorized = await handleUserSignIn({username:username, accessKey: accessKey})
+        console.log(isAuthorized)
+        if (isAuthorized) {
+            if (!window.location.href.includes("/dashboard")) window.location.href = "/dashboard";
+        } else {
+            setErrorMessage("Invalid username or password!")
+            const interval = setTimeout(() => {
+                setErrorMessage("")
+                return ()=>clearTimeout(interval)
+            }, 5000);
+        }
+    }
     
     React.useEffect(()=>{
         const controller = new Integrations()
@@ -41,7 +55,7 @@ function LoginView() {
             setAccessKey(magic_link.password)
 
             setTimeout(() => {
-                handleSignin()
+                handleMagicSignIn(magic_link.email, magic_link.password)
             }, 1000);
         }
     }, [])
