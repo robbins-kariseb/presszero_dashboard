@@ -15,7 +15,7 @@ import Integrations from '../../controllers/integration.controller';
 
 
 const TeamsDashboard = () => {
-    const { universalChangeCounter, userData, setConfirmation, handleAlert, handleWarning } = React.useContext(AppContext)
+    const { universalChangeCounter, onUniversalChange, userData, setConfirmation, handleAlert, handleWarning } = React.useContext(AppContext)
     const [isLoading, setIsLoading] = React.useState(true)
     const [USERS] = React.useState(new Users())
     const [API] = React.useState(new QuerySets())
@@ -115,7 +115,7 @@ const TeamsDashboard = () => {
                                     <div className='form'>
                                         <div className='form-control'>
                                             <label>Enter email</label>
-                                            <input onChange={(event)=>setInvitationEmail(event.target.value)} type={"email"} value={null} />
+                                            <input onChange={(event)=>setInvitationEmail(event.target.value)} type={"email"} />
                                         </div>
                                     </div>
                                 </div>,
@@ -127,8 +127,8 @@ const TeamsDashboard = () => {
                                     controller.createAdminUser({
                                         companyId: companyId,
                                         accessGroup: "admin",
-                                        name: "John",
-                                        surname: "Doe",
+                                        name: "Anonymous",
+                                        surname: "User",
                                         email: invitationEmail,
                                         dob: "1994-01-01",
                                         gender: "male",
@@ -139,6 +139,7 @@ const TeamsDashboard = () => {
                                         timezone: "SAST",
                                         delta: "2:00",
                                     })
+                                    onUniversalChange()
                                 },
                             })
                         }}
@@ -185,6 +186,7 @@ const TeamsDashboard = () => {
                                                         `
                                                     })
                                                 })
+                                                onUniversalChange()
                                             },
                                         })
                                     },
@@ -204,7 +206,9 @@ const TeamsDashboard = () => {
                                                 </div>
                                             </div>,
                                             cancel: () => { },
-                                            confirm: () => { },
+                                            confirm: () => {
+                                                onUniversalChange()
+                                             },
                                         })
                                     },
                                 }, {
@@ -227,6 +231,7 @@ const TeamsDashboard = () => {
                                                 selection.forEach((user) => {
                                                     controller.deleteAdminUser({ id: user.id })
                                                 })
+                                                onUniversalChange()
                                             },
                                         })
                                     },
@@ -306,6 +311,7 @@ const TeamsDashboard = () => {
                                                                         <p><a href='${magicLink}'><strong>Click Here</strong></a> in order to access your account!</p>
                                                                         `
                                                                 })
+                                                                onUniversalChange()
                                                             },
                                                         })
                                                     },

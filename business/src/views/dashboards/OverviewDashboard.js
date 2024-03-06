@@ -13,6 +13,7 @@ import PerformanceMetrics from '../../components/metrics/widgets/PerformanceMetr
 import Reports from '../../controllers/reports.controller';
 import GenericBarChart from '../charts/GenericBarChart';
 import WidgetFigure from '../../components/metrics/widgets/WidgetFigure';
+import WidgetCompanyMetrics from '../../components/metrics/widgets/WidgetCompanyMetrics';
 
 const ReportKeys = {
     0: "day",
@@ -43,6 +44,8 @@ const OverviewDashboard = () => {
     const [tab, setTab] = React.useState(0)
     const [menuTab, setMenuTab] = React.useState(0)
     const [isLoaded, setIsLoaded] = React.useState(false);
+    const [timeSeriesTab, setTimeSeriesTab] = React.useState(0)
+    const [tabMetrics, setTabMetrics] = React.useState({});
 
     const [tab1x1, setTab1x1] = React.useState(0)
     const [tab1x2, setTab1x2] = React.useState(0)
@@ -132,6 +135,7 @@ const OverviewDashboard = () => {
                 pageTitle={'Performance'}
                 pageSubtitle={""}
                 searchSpace={data}
+                addons={<WidgetCompanyMetrics item={userData ? userData.companyData:{}} timeseriesIndex={timeSeriesTab} metrics={tabMetrics} />}
             >
                 <div className='col-4x4'>
                     <div className='col-4x4 flex'>

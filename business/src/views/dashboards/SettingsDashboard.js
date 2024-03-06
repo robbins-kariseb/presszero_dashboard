@@ -14,6 +14,7 @@ import linkedin from '../../images/social/linkedin.png';
 import spaceX from '../../images/social/spacex.png';
 import instagram from '../../images/social/instagram.png';
 import Tab from '../../components/Tab';
+import WidgetCompanyMetrics from '../../components/metrics/widgets/WidgetCompanyMetrics';
 
 
 const SettingsDashboard = () => {
@@ -26,6 +27,8 @@ const SettingsDashboard = () => {
     const [tab, setTab] = React.useState(0)
     const [menuTab, setMenuTab] = React.useState(0)
     const [isLoaded, setIsLoaded] = React.useState(false);
+    const [timeSeriesTab, setTimeSeriesTab] = React.useState(0)
+    const [tabMetrics, setTabMetrics] = React.useState({});
     const [companyId] = React.useState(userData ? userData.userData.companyId : null)
 
     const hidePreview = () => setPreview(null)
@@ -73,7 +76,7 @@ const SettingsDashboard = () => {
                     />
                 </div>}
                 searchSpace={data}
-                addons={""}
+                addons={<WidgetCompanyMetrics item={userData.companyData} timeseriesIndex={timeSeriesTab} metrics={tabMetrics} />}
             >
                 {tab === 0 && <React.Fragment>
                     <div className='col-2x2 widget full-width'>
