@@ -42,7 +42,7 @@ function LoginView() {
 
             setTimeout(() => {
                 handleSignin()
-            }, 50);
+            }, 1000);
         }
     }, [])
 
