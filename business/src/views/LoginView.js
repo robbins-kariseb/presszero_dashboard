@@ -3,19 +3,21 @@ import logo from "../images/logo.png"
 import { Link, useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppProvider'
 import banner from "../images/press-zero-banner-01.png"
+import Integrations from '../controllers/integration.controller'
 
 
 function LoginView() {
     const {handleUserSignIn} = React.useContext(AppContext)
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
+    const [accessKey, setAccessKey] = React.useState("")
 
     const [errorMessage, setErrorMessage] = React.useState("")
 
     const navigate = useNavigate();
 
     const handleSignin = async () => {
-        const isAuthorized = await handleUserSignIn({username:username,password:password})
+        const isAuthorized = await handleUserSignIn({username:username,password:password, accessKey: accessKey})
         console.log(isAuthorized)
         if (isAuthorized) {
             if (!window.location.href.includes("/dashboard")) window.location.href = "/dashboard";
@@ -28,6 +30,22 @@ function LoginView() {
         }
     }
     
+    React.useEffect(()=>{
+        const controller = new Integrations()
+
+        const magic_link = controller.extractMagicLink()
+        console.log("magic_link",magic_link)
+
+        if (magic_link && magic_link.email !== null && magic_link.password !== null) {
+            setUsername(magic_link.email)
+            setAccessKey(magic_link.password)
+
+            setTimeout(() => {
+                handleSignin()
+            }, 50);
+        }
+    })
+
     return (
         <React.Fragment>
             <div className='container flex'>

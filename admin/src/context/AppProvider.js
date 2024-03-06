@@ -59,7 +59,7 @@ const AppProvider = ({ children }) => {
         localStorage.setItem('user_data', JSON.stringify(user))
         return true;
       } else {
-        handleAlert("Invalid username or password!")
+        // handleAlert("Invalid username or password!")
         return false;
       }
     } else {
