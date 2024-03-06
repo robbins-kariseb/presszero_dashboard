@@ -11,14 +11,16 @@ import Integrations from '../../../controllers/integration.controller'
 function WidgetCompanyMetrics({item, timeseriesIndex}) {
     const [API] = React.useState(new QuerySets())
     const [SYSTEMS] = React.useState(new Integrations())
-    const [companyId] = React.useState(window.location.href.split("/")[4])
+    // const [companyId] = React.useState(window.location.href.split("/")[4])
     const [data, setData] = React.useState([])
     const [metrics, setMetrics] = React.useState({})
     const [metricsMonth, setMetricsMonth] = React.useState({})
     const [metricsDay, setMetricsDay] = React.useState({})
     const [preview, setPreview] = React.useState(null)
-    const [hasZendesk, setHasZendesk] = React.useState(null)
-    const [hasOutlook, setHasOutlook] = React.useState(null)
+    const [hasZendesk, setHasZendesk] = React.useState(false)
+    const [hasOutlook, setHasOutlook] = React.useState(false)
+
+    const companyId = item.id;
 
     const hidePreview = () => setPreview(null)
 
