@@ -10,16 +10,17 @@ import Users from '../../controllers/user.controller';
 import TeamBanner from "../../images/invite-team-banner.png"
 import { isValidEmail } from '../../utilities/helpers';
 import CustomerInvitationForm from '../forms/CustomerInvitationForm';
+import Integrations from '../../controllers/integration.controller';
 
 
 const CustomerInvitationDashboard = () => {
-    const {universalChangeCounter,userData,setConfirmation,handleAlert,handleWarning, onUniversalChange} = React.useContext(AppContext)
+    const {universalChangeCounter, userData,setConfirmation,handleAlert,handleWarning, onUniversalChange} = React.useContext(AppContext)
     const [isLoading,setIsLoading] = React.useState(true)
     const [USERS] = React.useState(new Users())
     const [API] = React.useState(new QuerySets())
     const [selection,setSelection] = React.useState([])
     const [activeUserList,setActiveUserList] = React.useState([])
-    const [invitationEmail,setInvitationEmail] = React.useState("")
+    const [invitationList,setInvitationList] = React.useState([])
     const [preview, setPreview] = React.useState(null)
     const [menuTab, setMenuTab] = React.useState(0)
     const [isLoaded, setIsLoaded] = React.useState(false);
@@ -71,7 +72,7 @@ const CustomerInvitationDashboard = () => {
         const init = async ()=>{
             const users = await USERS.listCompanyInvitations({companyId: companyId})
             try {
-                setActiveUserList(users.items)
+                setActiveUserList(users.response)
             } catch (ex) {
                 console.warn(ex)
             }
@@ -103,9 +104,44 @@ const CustomerInvitationDashboard = () => {
                         onClick={()=>{
                             setConfirmation({
                                 heading: ``,
-                                content: <CustomerInvitationForm />,
+                                content: <CustomerInvitationForm setInvitations={setInvitationList} />,
                                 cancel: ()=>{},
-                                confirm: ()=>{},
+                                confirm: ()=>{
+                                    const controller = new Integrations()
+                                    const lst = JSON.parse(window.localStorage.getItem('__invitations__'))
+                                    window.localStorage.setItem('__invitations__', '[]')
+
+                                    if (lst) {
+                                        lst.forEach((email)=>{
+                                            controller.inviteCompanyCustomer({
+                                                companyId:userData.companyData.id,
+                                                name: "Anonymous",
+                                                surname: "User",
+                                                email: email
+                                            })
+                                            controller.sendSystemEmail({
+                                                message: `
+                                                <h4>Dear User</h4> <br/> This is a friendly invitation to Join ${userData.companyData.businessName} on Press Zero!
+                                                <br/>
+                                                <a href='https://www.apple.com/app-store/'>Download on App Store</a>
+                                                <br/>
+                                                <a href='https://play.google.com/store/apps?hl=en&gl=US&pli=1'>Download on Play Store</a>
+                                                <br/>
+                                                Regards,
+                                                <br/>
+                                                Press Zero Team!
+                                                `,
+                                                subject: `Invitation: Join ${userData.companyData.businessName} on Press Zero`,
+                                                email: email,
+                                            })
+                                            onUniversalChange()
+                                            setTimeout(() => {
+                                                onUniversalChange()
+                                            }, 2000);
+                                        })
+                                    }
+
+                                },
                             })
                         }} 
                     />

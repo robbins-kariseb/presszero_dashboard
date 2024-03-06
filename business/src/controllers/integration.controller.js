@@ -140,6 +140,29 @@ export default class Integrations  {
         });
     }
 
+    inviteCompanyCustomer = async ({companyId, name, surname, email}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({companyId, name, surname, email});
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/models/businessCustomerInvitations`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
     sendSystemEmail = async ({message, subject, email}) => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);

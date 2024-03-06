@@ -3,7 +3,7 @@ import TeamBanner from "../../images/invite-team-banner.png";
 import { AppContext } from '../../context/AppProvider';
 import { isValidEmail } from '../../utilities/helpers';
 
-function CustomerInvitationForm({ }) {
+function CustomerInvitationForm({ setInvitations }) {
     const {onUniversalChange,handleWarning} = React.useContext(AppContext);
     const [counter,setInvitationListChangeCounter] = React.useState(0);
     const [invitationEmail,setInvitationEmail] = React.useState("");
@@ -21,6 +21,7 @@ function CustomerInvitationForm({ }) {
                 list.push(email);
                 // Save invitation
                 setInvitationList(list);
+                window.localStorage.setItem('__invitations__', JSON.stringify(list))
                 // Clear the input field after processing the email
                 setInvitationEmail('');
                 event.target.value = '';
