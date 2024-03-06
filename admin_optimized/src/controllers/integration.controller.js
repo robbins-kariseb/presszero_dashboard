@@ -1,5 +1,7 @@
-import { pressZeroEmailTemplate } from "../../../business/src/controllers/message.controller";
-import { API_REFERENCE, API_TOKEN } from "./api.controller";
+import { API_REFERENCE, API_TOKEN, APP_REFERENCE } from "./api.controller";
+import { pressZeroEmailTemplate } from "./message.controller";
+const CryptoJS = require("crypto-js");
+const salt = '00-_-21..Po>o/|:KpO';
 
 export default class Integrations  {
     zendeskTest = async ({companyId, token, username, domain}) => {
@@ -170,5 +172,75 @@ export default class Integrations  {
             console.log('error', error)
             return []
         });
+    }
+
+    updateAccessKeys = async ({userId, access_key}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "userId": userId,
+            "password": access_key
+        });
+
+        const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/admin/update/accessKeys`, requestOptions)
+        .then(response => response.text())
+        .then(result => JSON.parse(result))
+        .catch(error => {
+            console.log('error', error)
+            return []
+        });
+    }
+
+    createMagicLink = async ({email, password}) => {
+        // String to encrypt
+        const string = `{"email": "${email}", "password": "${password}"}`;
+
+        // Encrypt the string using AES encryption
+        const encryptedString = CryptoJS.AES.encrypt(string, salt).toString();
+
+        return `${APP_REFERENCE}login/?key=${encryptedString}`
+    }
+
+    extractMagicLink = () => {
+        const urlParts = window.location.href.split('?')
+        let json = '';
+
+        if (urlParts.length === 2) {
+            const keyVal = urlParts[1].split('=')
+
+            if (keyVal[0] === 'key') {
+                json = keyVal[1];
+
+                if (json.length > 0) {
+                    // Encrypted string
+                    const encryptedString = json; // Replace "encrypted string here" with your actual encrypted string
+
+                    // Decrypt the string using AES decryption
+                    const decryptedBytes = CryptoJS.AES.decrypt(encryptedString, salt);
+                    const decryptedString = decryptedBytes.toString(CryptoJS.enc.Utf8);
+
+                    console.log("Decrypted String:", decryptedString);
+
+                    try {
+                        const res = JSON.parse(decryptedString)
+                        console.log(res)
+                        return res;
+                    } catch (ex) {
+                        return null;
+                    }
+                }
+            }
+        } else {
+            return null;
+        }
     }
 }
