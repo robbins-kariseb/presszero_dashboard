@@ -182,8 +182,11 @@ const TeamsDashboard = () => {
                                                         message: `
                                                         <h4>Hello, ${user.name}</h4>
                                                         <p>This is an invitation to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
-                                                        <p><a href='${magicLink}'><strong>Click Here</strong></a> in order to access your account!</p>
-                                                        `
+                                                        `,
+                                                        action: {
+                                                            title: 'Login with Magic Link',
+                                                            url: magicLink
+                                                        }
                                                     })
                                                 })
                                                 onUniversalChange()
@@ -308,8 +311,11 @@ const TeamsDashboard = () => {
                                                                     message: `
                                                                         <h4>Hello, ${e.name}</h4>
                                                                         <p>This is an invitation to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
-                                                                        <p><a href='${magicLink}'><strong>Click Here</strong></a> in order to access your account!</p>
-                                                                        `
+                                                                        `,
+                                                                    action: {
+                                                                        title: 'Login with Magic Link',
+                                                                        url: magicLink
+                                                                    }
                                                                 })
                                                                 onUniversalChange()
                                                             },

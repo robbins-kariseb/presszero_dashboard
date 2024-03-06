@@ -1,3 +1,4 @@
+import { pressZeroEmailTemplate } from "../../../business/src/controllers/message.controller";
 import { API_REFERENCE, API_TOKEN } from "./api.controller";
 
 export default class Integrations  {
@@ -138,15 +139,21 @@ export default class Integrations  {
         });
     }
 
-    sendSystemEmail = async ({message, subject, email}) => {
+    sendSystemEmail = async ({message, subject, email, subtitle}) => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
         myHeaders.append("Content-Type", "application/json");
 
+
+
         const raw = JSON.stringify({
             "subject": subject,
             "recipient_email": email,
-            "message": message
+            "message": pressZeroEmailTemplate({
+                title: subject,
+                subtitle: subtitle||"Press Zero",
+                body: message
+            })
         });
 
         const requestOptions = {

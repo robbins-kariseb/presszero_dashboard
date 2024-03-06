@@ -1,4 +1,5 @@
 import { API_REFERENCE, API_TOKEN, APP_REFERENCE } from "./api.controller";
+import { pressZeroEmailTemplate } from "./message.controller";
 const CryptoJS = require("crypto-js");
 const salt = '00-_-21..Po>o/|:KpO'; // Replace 'yourSecretKey' with your actual secret key
 
@@ -163,15 +164,22 @@ export default class Integrations  {
         });
     }
 
-    sendSystemEmail = async ({message, subject, email}) => {
+    sendSystemEmail = async ({message, subject, email, subtitle, action}) => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
         myHeaders.append("Content-Type", "application/json");
 
+
+
         const raw = JSON.stringify({
             "subject": subject,
             "recipient_email": email,
-            "message": message
+            "message": pressZeroEmailTemplate({
+                title: subject,
+                subtitle: subtitle||"Press Zero",
+                body: message,
+                action: action,
+            })
         });
 
         const requestOptions = {
