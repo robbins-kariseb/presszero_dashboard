@@ -1154,7 +1154,6 @@ table.business-themed-table tr {
 .metric-controls.score-small.positive {
   margin: 10px;
   color: #007A5C;
-  background: #EDF7ED;
   border-radius: 20px;
   width: 75px;
   text-align: center;
@@ -1165,7 +1164,6 @@ table.business-themed-table tr {
 .metric-controls.score-small.negative {
   margin: 10px;
   color: #7a0000;
-  background: #f7eded;
   border-radius: 20px;
   width: 75px;
   text-align: center;
