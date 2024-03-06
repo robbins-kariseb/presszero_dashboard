@@ -34,7 +34,7 @@ function LoginView() {
         const controller = new Integrations()
 
         const magic_link = controller.extractMagicLink()
-        console.log("magic_link",magic_link)
+        console.log("magic_link", magic_link)
 
         if (magic_link && magic_link.email !== null && magic_link.password !== null) {
             setUsername(magic_link.email)
@@ -44,7 +44,7 @@ function LoginView() {
                 handleSignin()
             }, 50);
         }
-    })
+    }, [])
 
     return (
         <React.Fragment>
