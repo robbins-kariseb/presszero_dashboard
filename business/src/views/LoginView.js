@@ -22,7 +22,7 @@ function LoginView() {
         if (isAuthorized) {
             if (!window.location.href.includes("/dashboard")) window.location.href = "/dashboard";
         } else {
-            setErrorMessage("Invalid username or password!")
+            setErrorMessage("You are not authorized to access this application!")
             const interval = setTimeout(() => {
                 setErrorMessage("")
                 return ()=>clearTimeout(interval)
@@ -106,7 +106,7 @@ function LoginView() {
                             <input className='enabled' onClick={handleSignin} type='button' value='Sign in' />
                         </div>
 
-                        <div className='form-control'>
+                        {/* <div className='form-control'>
                             <input className='disabled' type='button' value='Forgot Password?' />
                         </div>
 
@@ -114,7 +114,7 @@ function LoginView() {
                             <center>
                                 <p>Don’t have an account? <Link to={"/register"}>SIGN UP</Link></p>
                             </center>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

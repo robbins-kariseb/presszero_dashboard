@@ -2864,18 +2864,74 @@ h6.time-display {
 }
 
 /* For mobile devices */
-@media only screen and (max-width: 767px) {
-  .widget-1x3 {
-    width: 100%;
+@media only screen and (max-width: 549px) {
+  .scrollable-container .col-4x4 .col-4x4.flex {
+    display: inline-block;
   }
 
-  .mini-3x3 {
+  .scrollable-container .col-4x4 .col-4x4.flex .widget.col-1x4 {
+      width: 45%;
+      display: inline-grid;
+  }
+  .scrollable-container .col-4x4 .col-4x4.flex {
+    display: inline-block;
+  }
+
+  .scrollable-container .col-4x4 .col-4x4.flex .widget.col-1x4 {
+      width: 45%;
+      display: inline-grid;
+  }
+  
+  .page-heading .wrapper.col-3x4 {
+    width: 100%;
+    overflow: hidden;
+    overflow-x: scroll;
+  }
+
+  .page-heading .wrapper.col-3x4 .col-1x5.menu-statistics {
+      width: 27%;
+  }
+
+  .page-heading .wrapper.col-3x4 .widget.col-5x5 {
+      width: 200%;
+  }
+
+  .banner img {
+    width: 100%;
+    margin-top: 40vh;
+  }
+
+  .container.flex {
     display: block;
-    width: 100%;
   }
-}
 
-@media only screen and (min-width: 768px) and (max-width: 980px) {
+  .container {
+    height: 100vh;
+    width: 100%;
+    display: block;
+    overflow: scroll;
+  }
+
+  .info-banner {
+    position: absolute;
+    padding: 35px;
+    margin: auto;
+    width: 200px;
+    left: 20vw;
+    margin-top: 10vh;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: #464646a1;
+    border-radius: 10px;
+    z-index: 10000000;
+  }
+
+  .container .main-2x3,
+  .container .main-1x3 {
+    width: 100%;
+    display: block;
+  }
+
   .page-heading {
     display: block;
   }
@@ -2885,75 +2941,328 @@ h6.time-display {
       width: 100%;
       margin-bottom: 35px;
   }
-  .wrapper.col-3x4 {
-    width: 95%;
+  .heading.metric-heading h4.metric-numeric.top {
+    font-size: 20px;
+    width: 100%;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  .metric-controls {
+    width: 100%;
+    margin: 0;
+  }
+
+  .heading.metric-heading h4 {
+    font-size: 11px;
+  }
+
+  .form-control input,
+  .form-control select {
+    min-width: 280px;
+  }
+
+  .flex.widget-menu .flex.tabs .button {
+    font-size: 11px;
+  }
+}
+/* For large mobile devices */
+@media only screen and (min-width: 550px) and (max-width: 767px) {
+  .scrollable-container .col-4x4 .col-4x4.flex {
+    display: inline-block;
+  }
+
+  .scrollable-container .col-4x4 .col-4x4.flex .widget.col-1x4 {
+      width: 45%;
+      display: inline-grid;
+  }
+  .scrollable-container .col-4x4 .col-4x4.flex {
+    display: inline-block;
+  }
+
+  .scrollable-container .col-4x4 .col-4x4.flex .widget.col-1x4 {
+      width: 45%;
+      display: inline-grid;
+  }
+  
+  .page-heading .wrapper.col-3x4 {
+    width: 100%;
+    overflow: hidden;
+    overflow-x: scroll;
+  }
+
+  .page-heading .wrapper.col-3x4 .col-1x5.menu-statistics {
+      width: 27%;
+  }
+
+  .page-heading .wrapper.col-3x4 .widget.col-5x5 {
+      width: 200%;
+  }
+
+  .banner img {
+    width: 100%;
+    margin-top: 40vh;
+  }
+
+  .container.flex {
+    display: block;
+  }
+
+  .container {
+    height: 100vh;
+    width: 100%;
+    display: block;
+    overflow: scroll;
+  }
+
+  .info-banner {
+    left: 35vw;
+    position: absolute;
+    padding: 35px;
+    margin: auto;
+    width: 200px;
+    margin-top: 25%;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: #464646a1;
+    border-radius: 10px;
+    z-index: 10000000;
+  }
+
+  .container .main-2x3,
+  .container .main-1x3 {
+    width: 100%;
+    display: block;
+  }
+
+  .page-heading {
+    display: block;
+  }
+
+  .page-heading .wrapper.col-1x4 {
+      margin: 10px;
+      width: 100%;
+      margin-bottom: 35px;
+  }
+  .heading.metric-heading h4.metric-numeric.top {
+    font-size: 20px;
+    width: 100%;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  .metric-controls {
+    width: 100%;
+    margin: 0;
+  }
+
+  .heading.metric-heading h4 {
+    font-size: 11px;
+  }
+
+  .form-control input,
+  .form-control select {
+    min-width: 280px;
+  }
+
+  .flex.widget-menu .flex.tabs .button {
+    font-size: 11px;
+  }
+}
+/* Small laptop devices */
+@media only screen and (min-width: 768px) and (max-width: 980px) {
+  .scrollable-container .col-4x4 .col-4x4.flex {
+    display: inline-block;
+  }
+
+  .scrollable-container .col-4x4 .col-4x4.flex .widget.col-1x4 {
+      width: 45%;
+      display: inline-grid;
+  }
+  
+  .page-heading .wrapper.col-3x4 {
+    width: 100%;
+    overflow: hidden;
+    overflow-x: scroll;
+  }
+
+  .page-heading .wrapper.col-3x4 .col-1x5.menu-statistics {
+      width: 27%;
+  }
+
+  .page-heading .wrapper.col-3x4 .widget.col-5x5 {
+      width: 200%;
+  }
+
+  .banner img {
+    width: 100%;
+    margin-top: 40vh;
+  }
+
+  .container.flex {
+    display: block;
+  }
+
+  .container {
+    height: 100vh;
+    width: 100%;
+    display: block;
+    overflow: scroll;
+  }
+
+  .info-banner {
+    left: 35vw;
+    position: absolute;
+    padding: 35px;
+    margin: auto;
+    width: 200px;
+    margin-top: 25%;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: #464646a1;
+    border-radius: 10px;
+    z-index: 10000000;
+  }
+
+  .container .main-2x3,
+  .container .main-1x3 {
+    width: 100%;
+    display: block;
+  }
+
+  .page-heading {
+    display: block;
+  }
+
+  .page-heading .wrapper.col-1x4 {
+      margin: 10px;
+      width: 100%;
+      margin-bottom: 35px;
+  }
+  .heading.metric-heading h4.metric-numeric.top {
+    font-size: 20px;
+    width: 100%;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  .metric-controls {
+    width: 100%;
+    margin: 0;
+  }
+
+  .heading.metric-heading h4 {
+    font-size: 11px;
+  }
+
+  .form-control input,
+  .form-control select {
+    min-width: 280px;
+  }
+
+  .flex.widget-menu .flex.tabs .button {
+    font-size: 11px;
+  }
+}
+/* Medium laptop devices */
+@media only screen and (min-width: 980px) and (max-width: 1360px) {
+  .scrollable-container .col-4x4 .col-4x4.flex {
+    display: inline-block;
+  }
+
+  .scrollable-container .col-4x4 .col-4x4.flex .widget.col-1x4 {
+      width: 45%;
+      display: inline-grid;
+  }
+
+  .page-heading .wrapper.col-3x4 {
+    width: 70%;
+    overflow: hidden;
+    overflow-x: scroll;
+  }
+
+  .page-heading .wrapper.col-3x4 .col-1x5.menu-statistics {
+      width: 27%;
+  }
+
+  .page-heading .wrapper.col-3x4 .widget.col-5x5 {
+      width: 200%;
+  }
+  .container .main-2x3, .container .main-1x3 {
+    width: 100%;
+  }
+
+  .banner img {
+    width: 100%;
+    margin-top: 35vh;
+  }
+
+  .heading.metric-heading h4 {
+    font-size: 13px;
   }
   
   .heading.metric-heading h4.metric-numeric.top {
     font-size: 20px;
-    width: 100%;
-    margin: 0;
-    margin-bottom: 10px;
+  }
+  .form-control input {
+    min-width: 200px;
   }
 
-  .metric-controls {
-    width: 100%;
-    margin: 0;
+  .widget.col-1x3 {
+    width: 30%;
   }
 
-  .heading.metric-heading h4 {
-    font-size: 11px;
+  .widget-1x3, .widget-2x3 {
+    width: 96%;
   }
 
-  .form-control input,
-  .form-control select {
-    min-width: 280px;
-  }
-
-  .flex.widget-menu .flex.tabs .button {
-    font-size: 11px;
-  }
-}
-
-@media only screen and (min-width: 980px) and (max-width: 1360px) {
-  .page-heading {
+  .mini-3x3 {
     display: block;
+    width: 96%;
   }
 
-  .page-heading .wrapper.col-1x4 {
-      margin: 10px;
-      width: 100%;
-      margin-bottom: 35px;
-  }
-  .heading.metric-heading h4.metric-numeric.top {
-    font-size: 20px;
-    width: 100%;
-    margin: 0;
-    margin-bottom: 10px;
+  .col-1x2.widget-1x3.company-crm-statistics {
+    width: 98%;
   }
 
-  .metric-controls {
-    width: 100%;
-    margin: 0;
+  .menu-wrapper {
+    overflow: hidden;
+    width: 60px;
   }
 
-  .heading.metric-heading h4 {
-    font-size: 11px;
+  .menu-item.info-bar .content-wrapper {
+    display:none;
   }
 
-  .form-control input,
-  .form-control select {
-    min-width: 280px;
+  .menu-item.info-bar.options {
+    padding-left: 30px;
+    left: -20px;
   }
 
-  .flex.widget-menu .flex.tabs .button {
-    font-size: 11px;
+  .menu-item.info-bar .logo-wrapper {
+    width: 40px;
+  }
+
+  .search-controls {
+    width: 80%;
+  }
+
+  .popup-window {
+    width: 99%;
+    left: 0vw;
   }
 }
 
 @media only screen and (min-width: 1360px) and (max-width: 1600px) {
   .widget.col-5x5 {
-    width: 115%;
+    width: 100%;
+  }
+  .banner img {
+    width: 100%;
+    margin-top: 35vh;
+  }
+  .container .main-2x3, .container .main-1x3 {
+    width: 100%;
   }
   .heading.metric-heading h4 {
     font-size: 13px;
@@ -3012,8 +3321,86 @@ h6.time-display {
 }
 
 /* For larger monitors */
-@media only screen and (min-width: 1324px) {
-  /* Your styles for larger monitors */
+@media only screen and (min-width: 1601px) {
+  .info-banner {
+    position: relative;
+    padding: 35px;
+    margin: auto;
+    width: 200px;
+    margin-top: 10vh;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: #464646a1;
+    border-radius: 10px;
+    z-index: 10000000;
+  }
+  .widget.col-5x5 {
+    width: 100%;
+  }
+  .banner img {
+    width: 100%;
+    margin-top: 35vh;
+  }
+  .container .main-2x3 {
+    width: 65%;
+  }
+  .container .main-1x3 {
+    width: 33%;
+  }
+  .heading.metric-heading h4 {
+    font-size: 13px;
+  }
+  
+  .heading.metric-heading h4.metric-numeric.top {
+    font-size: 20px;
+  }
+  .form-control input {
+    min-width: 200px;
+  }
+
+  .widget.col-1x3 {
+    width: 30%;
+  }
+
+  .widget-1x3, .widget-2x3 {
+    width: 96%;
+  }
+
+  .mini-3x3 {
+    display: block;
+    width: 96%;
+  }
+
+  .col-1x2.widget-1x3.company-crm-statistics {
+    width: 98%;
+  }
+
+  .menu-wrapper {
+    overflow: hidden;
+    width: 60px;
+  }
+
+  .menu-item.info-bar .content-wrapper {
+    display:none;
+  }
+
+  .menu-item.info-bar.options {
+    padding-left: 30px;
+    left: -20px;
+  }
+
+  .menu-item.info-bar .logo-wrapper {
+    width: 40px;
+  }
+
+  .search-controls {
+    width: 80%;
+  }
+
+  .popup-window {
+    width: 99%;
+    left: 0vw;
+  }
 }
 
 

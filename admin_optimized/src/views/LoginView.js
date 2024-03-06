@@ -74,7 +74,7 @@ function LoginView() {
                             <input className='enabled' onClick={handleSignin} type='button' value='Sign in' />
                         </div>
 
-                        <div className='form-control'>
+                        {/* <div className='form-control'>
                             <input className='disabled' type='button' value='Forgot Password?' />
                         </div>
 
@@ -82,7 +82,7 @@ function LoginView() {
                             <center>
                                 <p>Don’t have an account? <Link to={"/register"}>SIGN UP</Link></p>
                             </center>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
