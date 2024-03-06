@@ -1,7 +1,7 @@
 import { API_REFERENCE, API_TOKEN, APP_REFERENCE } from "./api.controller";
 import { pressZeroEmailTemplate } from "./message.controller";
 const CryptoJS = require("crypto-js");
-const salt = '00-_-21..Po>o/|:KpO'; // Replace 'yourSecretKey' with your actual secret key
+const salt = '00-_-21..Po>o/|:KpO';
 
 export default class Integrations  {
     zendeskTest = async ({companyId, token, username, domain}) => {

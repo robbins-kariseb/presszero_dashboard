@@ -8,12 +8,13 @@ import QuerySets from '../../controllers/dashboard.controller';
 
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import Integrations from '../../controllers/integration.controller';
 
 
 let isTriggered = false;
-function NewUserForm ({ item, handleClose }) {
+function NewUserForm({ item, handleClose }) {
     const [API] = React.useState(new QuerySets())
-    const {onUniversalChange, handleWarning, handleAlert} = React.useContext(AppContext)
+    const { onUniversalChange, handleWarning, handleAlert } = React.useContext(AppContext)
     const [USERS] = React.useState(new Users())
     const popupRef = React.useRef(null);
     const [transform, setTransform] = React.useState("translateX(100%)")
@@ -30,7 +31,7 @@ function NewUserForm ({ item, handleClose }) {
     const [country, setCountry] = React.useState("")
     const [timezone, setTimezone] = React.useState("")
     const [delta, setDelta] = React.useState("")
-    
+
     const onSaveChanges = async () => {
         if (!isValidEmail(email)) {
             handleWarning("Please enter a valid email!")
@@ -54,48 +55,71 @@ function NewUserForm ({ item, handleClose }) {
             name: name,
             accessGroup: accessGroup,
             surname: surname,
-            dob: dob||"1970-01-01",
+            dob: dob || "1970-01-01",
             gender: gender,
             email: email,
             password: password,
             phoneNumber: phoneNumber,
             country: country,
             timezone: timezone,
-            delta: delta|"02:00",
-        }).then((res)=>{
-            if (res.response === "successful") {
-                handleAlert(`The user account for ${name} has been created successfully!`)
-                onUniversalChange()
-                handleClose()
-            } else {
-                handleWarning(`The user account for ${name} could not be created because there is another user registered with this information!`)
+            delta: delta | "02:00",
+        }).then((res) => {
+            const notify = async () => {
+                if (res.response === "successful") {
+                    handleAlert(`The user account for ${name} has been created successfully!`)
+                    onUniversalChange()
+                    handleClose()
+                    const controller = new Integrations()
+                    const access_code = generateRandomHex(10)
+    
+                    const magicLink = await controller.createMagicLink({ email: email, password: access_code })
+                    controller.updateAccessKeys({
+                        userId: res.item.id,
+                        access_key: access_code
+                    })
+                    controller.sendSystemEmail({
+                        email: email,
+                        subject: `Invitation to Collaborate on Press Zero!`,
+                        message: `
+                        <h4>Hello, ${name}</h4>
+                        <p>This is an invitation to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
+                        `,
+                        action: {
+                            title: 'Login with Magic Link',
+                            url: magicLink
+                        }
+                    })
+                } else {
+                    handleWarning(`The user account for ${name} could not be created because there is another user registered with this information!`)
+                }
             }
+            notify()
         })
     }
-    
+
     React.useEffect(() => {
         isTriggered = false
         const init = async () => {
             try {
-                
+
             } catch (error) {
-                
+
             }
         }
 
         setTransform("translateX(0%)")
         init();
-    },[API]);
+    }, [API]);
 
     return (
         <div style={{ height: "70vh", transform: transform }} ref={popupRef} className="widget-2x3 company-crm-statistics popup-window">
             <div className="mini-heading flex">
                 <div className="titles flex">
                     <div className='popup-controls' onClick={handleClose}>
-                        <span  className="material-symbols-outlined">close</span>
+                        <span className="material-symbols-outlined">close</span>
                     </div>
                     <div className='block'>
-                        <h4>{name||"New User"}</h4>
+                        <h4>{name || "New User"}</h4>
                         <p>New User Account</p>
                     </div>
                 </div>
@@ -106,12 +130,12 @@ function NewUserForm ({ item, handleClose }) {
                         <div className='form-classic col-1x2'>
                             <div className='heading'>
                                 <div className='col-4x4 flex'>
-                                    <div style={{width:"80%"}} className='col-1x4'>
+                                    <div style={{ width: "80%" }} className='col-1x4'>
                                         <h4>User Account</h4>
                                     </div>
                                     <div className='col-1x4'>
-                                        <div style={{position:"relative", top:-15, left: -10}}>
-                                            <Button onClick={onSaveChanges} special={"icon-button text-align"} icon={<span  className="material-symbols-outlined">save</span>} title="Save Changes" />
+                                        <div style={{ position: "relative", top: -15, left: -10 }}>
+                                            <Button onClick={onSaveChanges} special={"icon-button text-align"} icon={<span className="material-symbols-outlined">save</span>} title="Save Changes" />
                                         </div>
                                     </div>
                                 </div>
@@ -121,26 +145,26 @@ function NewUserForm ({ item, handleClose }) {
                                     <div className='form-control'>
                                         <label>Access</label>
                                         <select value={accessGroup} onChange={(e) => setAccessGroup(e.target.value)}>
-                                            {["admin","agent","super-user"].map((m, idx) => <option key={idx} value={m}>{m}</option>)}
+                                            {["admin", "agent", "super-user"].map((m, idx) => <option key={idx} value={m}>{m}</option>)}
                                         </select>
                                     </div>
                                     <div className='form-control'>
                                         <label>First Name</label>
-                                        <input value={name} type={"text"} onChange={(e)=>setName(e.target.value)} />
+                                        <input value={name} type={"text"} onChange={(e) => setName(e.target.value)} />
                                     </div>
                                     <div className='form-control'>
                                         <label>Last Name</label>
-                                        <input value={surname} type={"text"} onChange={(e)=>setSurname(e.target.value)} />
+                                        <input value={surname} type={"text"} onChange={(e) => setSurname(e.target.value)} />
                                     </div>
                                     <div className='form-control'>
                                         <label>Gender</label>
                                         <select value={gender} onChange={(e) => setGender(e.target.value)}>
-                                            {["male","female","other"].map((m, idx) => <option key={idx} value={m.toLowerCase()}>{m}</option>)}
+                                            {["male", "female", "other"].map((m, idx) => <option key={idx} value={m.toLowerCase()}>{m}</option>)}
                                         </select>
                                     </div>
                                     <div className='form-control'>
                                         <label>Email</label>
-                                        <input value={email} type={"text"} onChange={(e)=>setEmail(e.target.value)} />
+                                        <input value={email} type={"text"} onChange={(e) => setEmail(e.target.value)} />
                                     </div>
                                 </div>
                                 <div className='col-1x2'>
