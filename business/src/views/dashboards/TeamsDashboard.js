@@ -104,7 +104,7 @@ const TeamsDashboard = () => {
                         onClick={() => {
                             setConfirmation({
                                 heading: ``,
-                                content: <div className='mini-form'>
+                                content: <div className='mini-form pop-window'>
                                     <div className='mini-form-banner full-width'>
                                         <img src={TeamBanner} alt='PZ Teams Banner' />
                                     </div>

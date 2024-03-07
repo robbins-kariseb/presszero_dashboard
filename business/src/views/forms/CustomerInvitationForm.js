@@ -37,7 +37,7 @@ function CustomerInvitationForm({ setInvitations }) {
     }, [invitationList]);
 
     return (
-        <div className='mini-form'>
+        <div className='mini-form pop-window'>
             <div className='mini-form-banner full-width'>
                 <img src={TeamBanner} alt='PZ Teams Banner' />
             </div>

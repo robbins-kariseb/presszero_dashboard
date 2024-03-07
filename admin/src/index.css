@@ -72,10 +72,10 @@ body {
   margin: auto;
   width: 30vw;
   min-height: 25vh;
-  max-height: 50vh;
+  max-height: auto;
   background: white;
   display: block;
-  margin-top: 20vh;
+  margin-top: 15vh;
   border-radius: 10px;
   padding: 30px;
 }
