@@ -99,6 +99,7 @@ body {
 
 .mini-form-banner.full-width img {
   width: 100%;
+  max-width: 550px;
 }
 
 .mini-form-banner.full-width {
