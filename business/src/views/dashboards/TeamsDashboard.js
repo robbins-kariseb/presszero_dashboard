@@ -30,6 +30,11 @@ const TeamsDashboard = () => {
 
     const hidePreview = () => setPreview(null)
 
+    const handleInvitationEmailUpdate = (val) => {
+        setInvitationEmail(val)
+        window.localStorage.setItem('__user_invitation_email__', val.toString())
+    }
+
     const handleBulkSelection = (event) => {
         if (!checkAll) {
             setSelection(activeUserList)
@@ -115,7 +120,7 @@ const TeamsDashboard = () => {
                                     <div className='form'>
                                         <div className='form-control'>
                                             <label>Enter email</label>
-                                            <input onChange={(event)=>setInvitationEmail(event.target.value)} type={"email"} />
+                                            <input onChange={(event)=>handleInvitationEmailUpdate(event.target.value)} type={"email"} />
                                         </div>
                                     </div>
                                 </div>,
@@ -129,7 +134,7 @@ const TeamsDashboard = () => {
                                         accessGroup: "admin",
                                         name: "Anonymous",
                                         surname: "User",
-                                        email: invitationEmail,
+                                        email: window.localStorage.getItem('__user_invitation_email__'),
                                         dob: "1994-01-01",
                                         gender: "male",
                                         password: access_code,
@@ -362,6 +367,7 @@ const TeamsDashboard = () => {
                                                                     } else {
                                                                         handleWarning("We could not delete this object! Please try again.")
                                                                     }
+                                                                    onUniversalChange()
                                                                 })
                                                             },
                                                         })

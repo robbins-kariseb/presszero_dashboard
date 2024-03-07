@@ -25,12 +25,17 @@ const AppProvider = ({ children }) => {
   const [indexedViewData, setIndexedViewData] = useState({});
   const [universalChangeCounter, setUniversalChange] = useState(0);
 
-  const onUniversalChange = () => {
+  const onUniversalChange = (recursion=false) => {
     const interval = setTimeout(() => {
         setUniversalChange(universalChangeCounter + 1);
     }, 2000);
 
     return () => {
+      if (!recursion){
+        setTimeout(() => {
+          onUniversalChange(true)
+        }, 1000);
+      }
       clearTimeout(interval);
     };
   };

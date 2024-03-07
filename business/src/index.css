@@ -793,7 +793,7 @@ widget-container .title-wrapper h4 {
   padding: 12px 12px 12px 20px;
   border-radius: 5px;
   border: 1px solid #e7e7e7;
-  min-width: 90%;
+  width: 90%;
 }
 
 .flex.widget-menu .flex.tabs {
