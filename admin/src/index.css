@@ -70,12 +70,13 @@ body {
 
 .confirmation-box .mini-window {
   margin: auto;
-  width: 30vw;
+  min-width: 30vw;
   min-height: 25vh;
-  max-height: auto;
+  max-width: 50vw;
+  max-height: 70vh;
   background: white;
   display: block;
-  margin-top: 15vh;
+  margin-top: 20vh;
   border-radius: 10px;
   padding: 30px;
 }
