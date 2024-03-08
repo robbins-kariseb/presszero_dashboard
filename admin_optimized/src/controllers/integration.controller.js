@@ -232,7 +232,6 @@ export default class Integrations  {
 
                     try {
                         const res = JSON.parse(decryptedString)
-                        console.log(res)
                         return res;
                     } catch (ex) {
                         return null;

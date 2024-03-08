@@ -90,7 +90,6 @@ export const calculateAverageTimeToClose = (dataset) => {
         if (resolvedDate) {
             responseTimes.push(new Date(resolvedDate) - new Date(createdDate))
         } else {
-            console.log(chat)
         }
     });
 
@@ -109,9 +108,7 @@ export const timeseriesExtract = ({ dataset, key }) => {
     const timeseriesMonth = [];
     const timeseriesAllTimes = initial;
 
-    const currentDate = new Date(); // current date and time
-
-    console.log(dataset)
+    const currentDate = new Date();
 
     initial.forEach((e) => {
         if (e.createdDate) {

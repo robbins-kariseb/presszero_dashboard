@@ -72,7 +72,6 @@ const OverviewDashboard = () => {
             if (userData && userData.companyData)
             {
                 const dataset = await API.getCompanyChatMessages({companyId: userData.companyData.id})
-                console.log("############################",dataset)
                 const survey = await API.getFilteredModels({model: "surveyAfterChat", filters: {companyId: userData.companyData.id}})
 
                 try {

@@ -7,8 +7,10 @@ import QuerySets from '../../../controllers/dashboard.controller'
 import { timeseriesExtract } from '../../../utilities/helpers'
 import CompanyReport from '../../../views/reports/CompanyReport'
 import Integrations from '../../../controllers/integration.controller'
+import { AppContext } from '../../../context/AppProvider'
 
 function WidgetCompanyMetrics({item, timeseriesIndex}) {
+    const { userData } = React.useContext(AppContext)
     const [API] = React.useState(new QuerySets())
     const [SYSTEMS] = React.useState(new Integrations())
     // const [companyId] = React.useState(window.location.href.split("/")[4])

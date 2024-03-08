@@ -5,9 +5,14 @@ function MiniRightPopup({actions, onClick}) {
         onClick && onClick(e)
         e.onClick && e.onClick(e)
     }
+    
+    const handleMouseLeave = () => {
+        onClick && onClick(); // Trigger onClick from props
+    };
+
     return (
         <div className='popup-control'>
-            <div className='mini-right-popup'>
+            <div style={{zIndex: 10000}} onMouseLeave={handleMouseLeave} className='mini-right-popup'>
                 {actions.map((e,idx)=><div key={idx} onClick={()=>handleOnclick(e)} className='action-control'>{e.name}</div>)}
             </div>
         </div>
