@@ -48,14 +48,27 @@ const BrandControlsDashboard = () => {
     const inputFile = React.useRef(null)
 
     const saveChanges = async () => {
-        await API.updateModel({model: "socialLinks", fields: {
-            twitter: twitterField,
-            facebook: facebookField,
-            linkedin: linkedinField,
-            instagram: instagramField,
-            googlePlayLink: appleStoreLinkField,
-            appleStoreLink: googlePlayLinkField,
-        }, id: socialLinks.id})
+        if (!socialLinks) {
+            await API.createModel({model: "socialLinks", object: {
+                companyId: companyId,
+                twitter: twitterField,
+                facebook: facebookField,
+                linkedin: linkedinField,
+                instagram: instagramField,
+                googlePlayLink: appleStoreLinkField,
+                appleStoreLink: googlePlayLinkField,
+            }})
+        } else {
+            await API.updateModel({model: "socialLinks", fields: {
+                twitter: twitterField,
+                facebook: facebookField,
+                linkedin: linkedinField,
+                instagram: instagramField,
+                googlePlayLink: appleStoreLinkField,
+                appleStoreLink: googlePlayLinkField,
+            }, id: socialLinks.id})
+        }
+        
 
         await API.updateModel({model: "company", fields: {
             businessName: businessNameField,
