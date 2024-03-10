@@ -1841,9 +1841,10 @@ p.form-error {
 }
 
 .wrap {
-  width: 200px;
+  width: auto;
   margin-left: 25%;
   text-align: center;
+  display: grid;
 }
 
 .wrap label {
