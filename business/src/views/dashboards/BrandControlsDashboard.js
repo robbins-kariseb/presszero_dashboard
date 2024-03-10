@@ -57,7 +57,27 @@ const BrandControlsDashboard = () => {
                 instagram: instagramField,
                 googlePlayLink: appleStoreLinkField,
                 appleStoreLink: googlePlayLinkField,
-            }})
+            }}).then(async (res)=>{
+                await API.updateModel({model: "socialLinks", fields: {
+                    twitter: twitterField,
+                    facebook: facebookField,
+                    linkedin: linkedinField,
+                    instagram: instagramField,
+                    googlePlayLink: appleStoreLinkField,
+                    appleStoreLink: googlePlayLinkField,
+                }, id: res.item.id})
+
+                const item = res.item;
+                
+                setSocialLinks(item)
+
+                setTwitter(item.twitter ? item.twitter : "")
+                setFacebook(item.facebook ? item.facebook : "")
+                setLinkedin(item.linkedin ? item.linkedin : "")
+                setInstagram(item.instagram ? item.instagram : "")
+                setAppleStoreLink(item.googlePlayLink ? item.googlePlayLink : "")
+                setGooglePlayLink(item.appleStoreLink ? item.appleStoreLink : "")
+            })
         } else {
             await API.updateModel({model: "socialLinks", fields: {
                 twitter: twitterField,
