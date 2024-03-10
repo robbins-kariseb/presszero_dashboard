@@ -164,14 +164,16 @@ const BrandControlsDashboard = () => {
 
             if (sl && sl.response) {
                 const item = sl.response[0];
-                setSocialLinks(item)
+                if (item) {
+                    setSocialLinks(item)
 
-                setTwitter(item.twitter)
-                setFacebook(item.facebook)
-                setLinkedin(item.linkedin)
-                setInstagram(item.instagram)
-                setAppleStoreLink(item.googlePlayLink)
-                setGooglePlayLink(item.appleStoreLink)
+                    setTwitter(item.twitter ? item.twitter : "")
+                    setFacebook(item.facebook ? item.facebook : "")
+                    setLinkedin(item.linkedin ? item.linkedin : "")
+                    setInstagram(item.instagram ? item.instagram : "")
+                    setAppleStoreLink(item.googlePlayLink ? item.googlePlayLink : "")
+                    setGooglePlayLink(item.appleStoreLink ? item.appleStoreLink : "")
+                }
             }
         }
         
