@@ -96,9 +96,10 @@ body {
 .info-message-wrapper {
   padding: 10px;
   margin: 30px;
-  background: #d4e9db;
-  border: 3px solid #133b2b;
+  background: #fefefe;
+  border: 3px solid #dcecff;
   border-radius: 15px;
+  -webkit-box-shadow: 5px 5px 19px 4px #00000029;
   box-shadow: 5px 5px 19px 4px #00000029;
 }
 
