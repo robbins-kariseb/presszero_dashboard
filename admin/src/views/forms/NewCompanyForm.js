@@ -192,7 +192,7 @@ function NewCompanyForm ({ item, handleClose }) {
     React.useEffect(() => {}, [businessName,email,phone,businessHoursStart,businessHoursEnd,description,location,rgbColours]);
 
     return (
-        <div style={{ height: "70vh", transform: transform }} ref={popupRef} className="widget-2x3 company-crm-statistics popup-window">
+        <div style={{ height: "70vh", display: "block" }} ref={popupRef} className="widget-2x3 company-crm-statistics popup-window">
             <div className="mini-heading flex">
                 <div className="titles flex">
                     <div className='popup-controls' onClick={handleClose}>

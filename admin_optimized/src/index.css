@@ -1292,6 +1292,17 @@ thead tr td {
   z-index: 100;
 } */
 
+.confirmation-box .mini-window .heading strong {
+  width: auto;
+  display: block;
+  padding: 6px;
+  background: #1a4136;
+  color: white;
+  border-radius: 15px;
+  margin-left: 0px;
+  margin-top: 10px;
+}
+
 .popup-window {
   width: 99%;
   height: 55vh;
@@ -2456,8 +2467,10 @@ h6.time-display {
   .container {
     height: 100vh;
     width: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
     display: block;
-    overflow: scroll;
+    overflow: hidden;
   }
 
   .info-banner {

@@ -11,7 +11,7 @@ function CompanyProfileEditorPopup({ item, popupType, handleClose }) {
     const [API] = React.useState(new QuerySets())
     const [SUBS] = React.useState(new Subscriptions())
     const popupRef = React.useRef(null);
-    const [transform, setTransform] = React.useState("translateX(100%)")
+    const [transform, setTransform] = React.useState("none")
 
     // Company Profile Inputs
     const [isUploadingLogo, setIsUploadingLogo] = React.useState(false)
@@ -317,7 +317,7 @@ function CompanyProfileEditorPopup({ item, popupType, handleClose }) {
             }
         }
 
-        setTransform("translateX(0%)")
+        setTransform("block")
         init();
     }, [API]);
 
@@ -346,7 +346,7 @@ function CompanyProfileEditorPopup({ item, popupType, handleClose }) {
         businessName, businessHours, email, phone, businessHoursStart, businessHoursEnd, description, location, rgbColours]);
 
     return (
-        <div style={{ height: "70vh", transform: transform }} ref={popupRef} className="widget-2x3 company-crm-statistics popup-window">
+        <div style={{ height: "70vh", display: "transform" }} ref={popupRef} className="widget-2x3 company-crm-statistics popup-window">
             <div className="mini-heading flex">
                 <div className="titles flex">
                     <div className='popup-controls' onClick={handleClose}>

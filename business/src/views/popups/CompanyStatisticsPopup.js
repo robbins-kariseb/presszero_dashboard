@@ -31,7 +31,7 @@ function CompanyStatisticsPopup({ item, handleClose }) {
   }, [API,companyId]);
 
   return (
-    <div style={{height:"65vh", transform: transform}} ref={popupRef} className="widget-2x3 company-crm-statistics popup-window">
+    <div style={{ height: "70vh", display: "block" }} ref={popupRef} className="widget-2x3 company-crm-statistics popup-window">
       <div className="popup-controls">
         <div className="back-button" onClick={handleClose||(()=>{})}>
             <img src={backIcon} alt="back-icon" />

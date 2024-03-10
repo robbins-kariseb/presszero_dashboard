@@ -293,7 +293,7 @@ function CompanyUserView() {
                                                             onClick={() => {
                                                                 setConfirmation({
                                                                     heading: "Re-send Invitation",
-                                                                    content: <p>You are about to resent invitation links to the given user! This will reset the password and access link, and send this credentials to the user. Are you sure you want to continue?</p>,
+                                                                    content: <div class="heading"><p>You are about to Re-send invitations to the following user(s):</p><strong>{e.email}</strong></div>,
                                                                     cancel: () => { },
                                                                     confirm: () => {
                                                                         const notify = async () => {
