@@ -141,7 +141,33 @@ export default class Integrations  {
         });
     }
 
-    sendSystemEmail = async ({message, subject, email, subtitle}) => {
+    updateAdminPassword = async ({userId, password}) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "userId": userId,
+            "password": password
+        });
+
+        const requestOptions = {
+            method: "GET",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        return await fetch(`${API_REFERENCE}api/press/zero/admin/update/password`, requestOptions)
+            .then(response => response.text())
+            .then(result => JSON.parse(result))
+            .catch(error => {
+                console.log('error', error)
+                return []
+            });
+    }
+
+    sendSystemEmail = async ({message, subject, email, subtitle, action}) => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
         myHeaders.append("Content-Type", "application/json");
@@ -154,7 +180,8 @@ export default class Integrations  {
             "message": pressZeroEmailTemplate({
                 title: subject,
                 subtitle: subtitle||"Press Zero",
-                body: message
+                body: message,
+                action: action
             })
         });
 

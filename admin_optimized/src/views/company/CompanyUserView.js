@@ -12,18 +12,21 @@ import WidgetCompanyMetrics from '../../components/metrics/widgets/WidgetCompany
 import StatusWidget from '../../components/generic/StatusWidget';
 import CompanyProfileEditorPopup from '../popups/CompanyProfileEditorPopup';
 import NewUserForm from '../forms/NewUserForm';
-import { formattedDate, queryCurrentDayOfWeek, queryOnlineStatus } from '../../utilities/helpers';
+import { formattedDate, generateRandomHex, queryCurrentDayOfWeek, queryOnlineStatus } from '../../utilities/helpers';
 import { useNavigate } from 'react-router-dom';
 import Users from '../../controllers/user.controller';
 import Button from '../../components/Button';
+import Integrations from '../../controllers/integration.controller';
 
 function CompanyUserView() {
-    const { 
-        indexedViewData, 
+    const {
+        indexedViewData,
         setIndexedViewData,
-        universalChangeCounter, 
+        universalChangeCounter,
         setConfirmation,
-        onUniversalChange
+        onUniversalChange,
+        handleWarning,
+        handleAlert
     } = React.useContext(AppContext);
     const [isLoading, setIsLoading] = React.useState(true)
     const [API] = React.useState(new QuerySets())
@@ -61,7 +64,7 @@ function CompanyUserView() {
         }
 
         init();
-    }, [API,universalChangeCounter])
+    }, [API, universalChangeCounter])
 
     React.useEffect(() => {
         const init = async () => {
@@ -134,7 +137,7 @@ function CompanyUserView() {
                                             }}
                                         />
                                     </div>
-                                    <p style={{ width: "70%" }} className='metric'>{(indexedViewData.companySizeEstimate||"Unknown ").replaceAll(' ','')} employees</p>
+                                    <p style={{ width: "70%" }} className='metric'>{(indexedViewData.companySizeEstimate || "Unknown ").replaceAll(' ', '')} employees</p>
                                 </div>
                                 <div className='group heading'>
                                     <h3>Company Users</h3>
@@ -203,19 +206,19 @@ function CompanyUserView() {
                         <div className='col-3x3 list block'>
                             <div className='widget col-1x3'>
                                 <div className={"subscription-widget"}>
-                                    <h4>{indexedViewData.maxAdmins||0}</h4>
+                                    <h4>{indexedViewData.maxAdmins || 0}</h4>
                                     <h5>Maximum Admin Users</h5>
                                 </div>
                             </div>
                             <div className='widget col-1x3'>
                                 <div className={"subscription-widget"}>
-                                    <h4>{indexedViewData.maxAgents||0}</h4>
+                                    <h4>{indexedViewData.maxAgents || 0}</h4>
                                     <h5>Maximum Agents</h5>
                                 </div>
                             </div>
                             <div className='widget col-1x3'>
                                 <div className={"subscription-widget"}>
-                                    <h4>{(companyUsers && companyUsers.length || 0)||0}</h4>
+                                    <h4>{(companyUsers && companyUsers.length || 0) || 0}</h4>
                                     <h5>All Users</h5>
                                 </div>
                             </div>
@@ -229,12 +232,12 @@ function CompanyUserView() {
                                                 <h4>Active Users</h4>
                                             </div>
                                             <div className='col-1x2'>
-                                                <Button onClick={()=>setUserPreview({type:"new-user", item: indexedViewData})} title="Add User" />
+                                                <Button onClick={() => setUserPreview({ type: "new-user", item: indexedViewData })} title="Add User" />
                                             </div>
                                         </div>
                                     </div>
-                                    <br/>
-                                    <br/>
+                                    <br />
+                                    <br />
                                     <table className="classic-table">
                                         <thead>
                                             <tr>
@@ -247,62 +250,135 @@ function CompanyUserView() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        {companyUsers && companyUsers.length > 0 && companyUsers.sort((a,b)=>a.id - b.id).map((e, idx) => <tr key={idx} style={{color: !e.is_active ? "red": "black"}}>
-                                            <td><div className='numeric-graphic good'>{e.country}</div></td>
-                                            <td style={{ width: 150 }}>{e.name} {e.surname}</td>
-                                            <td>{e.phoneNumber}</td>
-                                            <td><div style={{ width: "auto", background: "gray" }} className="hint"><center>{e.accessGroup.toString().toUpperCase()}</center></div></td>
-                                            <td><div style={{ width: "auto", background: "gray" }} className="hint"><center>{e.email}</center></div></td>
-                                            <td>
-                                                <div className='table-action-buttons'>
-                                                    <Button 
-                                                        title="Delete" 
-                                                        onClick={()=>{
-                                                            setConfirmation({
-                                                                heading: "Delete User Account",
-                                                                content: <p>You are about to delete this user account! This action cannot be reverted. Are you sure you want to contine?</p>,
-                                                                cancel: ()=>{},
-                                                                confirm: ()=>{
-                                                                    API.deleteModel({model: "adminUser", id: e.id}).then((res)=>{
-                                                                        onUniversalChange();
-                                                                    })
-                                                                },
-                                                            })
-                                                        }}
-                                                    />
-                                                    {e.is_active && <Button 
-                                                        title="Block"
-                                                        onClick={()=>{
-                                                            setConfirmation({
-                                                                heading: "Deactivate Account",
-                                                                content: <p>You are about to Deactivate this user account! Are you sure you want to contine?</p>,
-                                                                cancel: ()=>{},
-                                                                confirm: ()=>{
-                                                                    API.updateModel({model: "adminUser", fields: {is_active: false}, id: e.id}).then((res)=>{
-                                                                        onUniversalChange();
-                                                                    })
-                                                                },
-                                                            })
-                                                        }} 
-                                                    />}
-                                                    {!e.is_active && <Button 
-                                                        title="Unblock"
-                                                        onClick={()=>{
-                                                            setConfirmation({
-                                                                heading: "Activate Account",
-                                                                content: <p>You are about to activate this user account! Are you sure you want to contine?</p>,
-                                                                cancel: ()=>{},
-                                                                confirm: ()=>{
-                                                                    API.updateModel({model: "adminUser", fields: {is_active: true}, id: e.id}).then((res)=>{
-                                                                        onUniversalChange();
-                                                                    })
-                                                                },
-                                                            })
-                                                        }} 
-                                                    />}
-                                                </div>
-                                            </td>
-                                        </tr>)}
+                                            {companyUsers && companyUsers.length > 0 && companyUsers.sort((a, b) => a.id - b.id).map((e, idx) => <tr key={idx} style={{ color: !e.is_active ? "red" : "black" }}>
+                                                <td><div className='numeric-graphic good'>{e.country}</div></td>
+                                                <td style={{ width: 150 }}>{e.name} {e.surname}</td>
+                                                <td>{e.phoneNumber}</td>
+                                                <td><div style={{ width: "auto", background: "gray" }} className="hint"><center>{e.accessGroup.toString().toUpperCase()}</center></div></td>
+                                                <td><div style={{ width: "auto", background: "gray" }} className="hint"><center>{e.email}</center></div></td>
+                                                <td>
+                                                    <div className='table-action-buttons'>
+                                                        <Button
+                                                            title="Delete"
+                                                            onClick={() => {
+                                                                setConfirmation({
+                                                                    heading: "Delete User Account",
+                                                                    content: <p>You are about to delete this user account! This action cannot be reverted. Are you sure you want to continue?</p>,
+                                                                    cancel: () => { },
+                                                                    confirm: () => {
+                                                                        API.deleteModel({ model: "adminUser", id: e.id }).then((res) => {
+                                                                            onUniversalChange();
+                                                                        })
+                                                                    },
+                                                                })
+                                                            }}
+                                                        />
+                                                        {e.is_active && <Button
+                                                            title="Block"
+                                                            onClick={() => {
+                                                                setConfirmation({
+                                                                    heading: "Deactivate Account",
+                                                                    content: <p>You are about to Deactivate this user account! Are you sure you want to continue?</p>,
+                                                                    cancel: () => { },
+                                                                    confirm: () => {
+                                                                        API.updateModel({ model: "adminUser", fields: { is_active: false }, id: e.id }).then((res) => {
+                                                                            onUniversalChange();
+                                                                        })
+                                                                    },
+                                                                })
+                                                            }}
+                                                        />}
+                                                        {e.is_active && <Button
+                                                            title="Send Invite"
+                                                            onClick={() => {
+                                                                setConfirmation({
+                                                                    heading: "Re-send Invitation",
+                                                                    content: <p>You are about to Deactivate this user account! Are you sure you want to continue?</p>,
+                                                                    cancel: () => { },
+                                                                    confirm: () => {
+                                                                        const notify = async () => {
+                                                                            handleAlert(`Invitation was successfully send to ${e.name}!`)
+                                                                            onUniversalChange()
+                                                                            const controller = new Integrations()
+                                                                            const access_code = generateRandomHex(10)
+                                                                            const password = generateRandomHex(5)
+
+                                                                            const magicLink = await controller.createMagicLink({ email: e.email, password: access_code })
+                                                                            controller.updateAccessKeys({
+                                                                                userId: e.id,
+                                                                                access_key: access_code
+                                                                            })
+                                                                            if (e.accessGroup === 'owner') {
+                                                                                controller.sendSystemEmail({
+                                                                                    email: e.email,
+                                                                                    subject: `Press Zero Business Onboarding`,
+                                                                                    message: `
+                                                                                    <h4>Hello, ${e.name}</h4>
+                                                                                    <p>This is an invitation for <strong>${indexedViewData.businessName || "Your Business"}</strong> to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
+                                                                                    `,
+                                                                                    action: {
+                                                                                        title: 'Login with Magic Link',
+                                                                                        url: magicLink
+                                                                                    }
+                                                                                })
+                                                                            } else if (e.accessGroup === 'agent') {
+                                                                                controller.updateAdminPassword({
+                                                                                    userId: e.id,
+                                                                                    password: password
+                                                                                }).then((res) => {
+                                                                                    controller.sendSystemEmail({
+                                                                                        email: e.email,
+                                                                                        subject: `Invitation to Collaborate on Press Zero!`,
+                                                                                        message: `
+                                                                                        <h4>Hello, ${e.name}</h4>
+                                                                                        <p>This is an invitation from <strong>${indexedViewData.businessName || "Your Business"}</strong> to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
+                                                            
+                                                                                        <p>Please download the Press Zero app from App Store or Play Store, and use the following credentials to login!</p>
+                                                                                        <br/>
+                                                                                        <br/>
+                                                                                        <p><strong>User Name:</strong><br/>${e.email}</p>
+                                                                                        <p><strong>Password:</strong><br/>${password}</p>
+                                                                                        `
+                                                                                    })
+                                                                                })
+                                                                            } else {
+                                                                                controller.sendSystemEmail({
+                                                                                    email: e.email,
+                                                                                    subject: `Invitation to Collaborate on Press Zero!`,
+                                                                                    message: `
+                                                                                    <h4>Hello, ${e.name}</h4>
+                                                                                    <p>This is an invitation to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
+                                                                                    `,
+                                                                                    action: {
+                                                                                        title: 'Login with Magic Link',
+                                                                                        url: magicLink
+                                                                                    }
+                                                                                })
+                                                                            }
+                                                                        }
+                                                                        notify()
+                                                                    },
+                                                                })
+                                                            }}
+                                                        />}
+                                                        {!e.is_active && <Button
+                                                            title="Unblock"
+                                                            onClick={() => {
+                                                                setConfirmation({
+                                                                    heading: "Activate Account",
+                                                                    content: <p>You are about to activate this user account! Are you sure you want to continue?</p>,
+                                                                    cancel: () => { },
+                                                                    confirm: () => {
+                                                                        API.updateModel({ model: "adminUser", fields: { is_active: true }, id: e.id }).then((res) => {
+                                                                            onUniversalChange();
+                                                                        })
+                                                                    },
+                                                                })
+                                                            }}
+                                                        />}
+                                                    </div>
+                                                </td>
+                                            </tr>)}
                                         </tbody>
                                     </table>
                                 </div>

@@ -77,18 +77,48 @@ function NewUserForm({ item, handleClose }) {
                         userId: res.item.id,
                         access_key: access_code
                     })
-                    controller.sendSystemEmail({
-                        email: email,
-                        subject: `Invitation to Collaborate on Press Zero!`,
-                        message: `
-                        <h4>Hello, ${name}</h4>
-                        <p>This is an invitation to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
-                        `,
-                        action: {
-                            title: 'Login with Magic Link',
-                            url: magicLink
-                        }
-                    })
+                    if (accessGroup === 'owner') {
+                        controller.sendSystemEmail({
+                            email: email,
+                            subject: `Press Zero Business Onboarding`,
+                            message: `
+                            <h4>Hello, ${name}</h4>
+                            <p>This is an invitation for <strong>${item.businessName||"Your Business"}</strong> to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
+                            `,
+                            action: {
+                                title: 'Login with Magic Link',
+                                url: magicLink
+                            }
+                        })
+                    } else if (accessGroup === 'agent') {
+                        controller.sendSystemEmail({
+                            email: email,
+                            subject: `Invitation to Collaborate on Press Zero!`,
+                            message: `
+                            <h4>Hello, ${name}</h4>
+                            <p>This is an invitation from <strong>${item.businessName||"Your Business"}</strong> to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
+
+                            <p>Please download the Press Zero app from App Store or Play Store, and use the following credentials to login!</p>
+                            <br/>
+                            <br/>
+                            <p><strong>User Name:</strong><br/>${email}</p>
+                            <p><strong>Password:</strong><br/>${password}</p>
+                            `
+                        })
+                    } else {
+                        controller.sendSystemEmail({
+                            email: email,
+                            subject: `Invitation to Collaborate on Press Zero!`,
+                            message: `
+                            <h4>Hello, ${name}</h4>
+                            <p>This is an invitation to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
+                            `,
+                            action: {
+                                title: 'Login with Magic Link',
+                                url: magicLink
+                            }
+                        })
+                    }
                 } else {
                     handleWarning(`The user account for ${name} could not be created because there is another user registered with this information!`)
                 }

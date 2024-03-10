@@ -259,7 +259,7 @@ function CompanyUserView() {
                                                         onClick={()=>{
                                                             setConfirmation({
                                                                 heading: "Delete User Account",
-                                                                content: <p>You are about to delete this user account! This action cannot be reverted. Are you sure you want to contine?</p>,
+                                                                content: <p>You are about to delete this user account! This action cannot be reverted. Are you sure you want to continue?</p>,
                                                                 cancel: ()=>{},
                                                                 confirm: ()=>{alert("Object was deleted!")},
                                                             })
