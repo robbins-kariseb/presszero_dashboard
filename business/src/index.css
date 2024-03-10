@@ -1643,19 +1643,10 @@ thead tr td {
   height: 55vh;
   position: absolute;
   top: 200px;
-  left: 0vw;
   border-radius: 0px;
   background: #ffffffb5;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  -webkit-transform: translateX(100%);
-  -ms-transform: translateX(100%);
-  transform: translateX(100%);
-  -webkit-transition: -webkit-transform 0.2s ease-in-out;
-  transition: -webkit-transform 0.2s ease-in-out;
-  -o-transition: transform 0.2s ease-in-out;
-  transition: transform 0.2s ease-in-out;
-  transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
   padding: 0px;
   z-index: 100;
 }
