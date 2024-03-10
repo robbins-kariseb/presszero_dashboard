@@ -43,11 +43,6 @@ function NewUserForm({ item, handleClose }) {
             return;
         }
 
-        if (phoneNumber.length === 0) {
-            handleWarning("The phone number field is required!")
-            return;
-        }
-
         const password = generateRandomHex(5)
 
         USERS.createAdminUser({
@@ -84,6 +79,11 @@ function NewUserForm({ item, handleClose }) {
                             message: `
                             <h4>Hello, ${name}</h4>
                             <p>This is an invitation for <strong>${item.businessName||"Your Business"}</strong> to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
+                            <p>Please download the Press Zero app from App Store or Play Store, and use the following credentials to login!</p>
+                            <br/>
+                            <br/>
+                            <p><strong>User Name:</strong><br/>${email}</p>
+                            <p><strong>Password:</strong><br/>${password}</p>
                             `,
                             action: {
                                 title: 'Login with Magic Link',
@@ -104,6 +104,25 @@ function NewUserForm({ item, handleClose }) {
                             <p><strong>User Name:</strong><br/>${email}</p>
                             <p><strong>Password:</strong><br/>${password}</p>
                             `
+                        })
+                    } else if (accessGroup === 'admin' || accessGroup === 'super-user') {
+                        controller.sendSystemEmail({
+                            email: email,
+                            subject: `Invitation to Collaborate on Press Zero!`,
+                            message: `
+                            <h4>Hello, ${name}</h4>
+                            <p>This is an invitation from <strong>${item.businessName||"Your Business"}</strong> to collaborate on Press Zero! Do follow the link below in order to access your account!</p>
+
+                            <p>Please download the Press Zero app from App Store or Play Store, and use the following credentials to login!</p>
+                            <br/>
+                            <br/>
+                            <p><strong>User Name:</strong><br/>${email}</p>
+                            <p><strong>Password:</strong><br/>${password}</p>
+                            `,
+                            action: {
+                                title: 'Login with Magic Link',
+                                url: magicLink
+                            }
                         })
                     } else {
                         controller.sendSystemEmail({
@@ -198,14 +217,14 @@ function NewUserForm({ item, handleClose }) {
                                     </div>
                                 </div>
                                 <div className='col-1x2'>
-                                    <div className='form-control'>
+                                    {/* <div className='form-control'>
                                         <label>Phone Number</label>
                                         <PhoneInput
                                             country={'us'}
                                             value={phoneNumber}
                                             onChange={setPhoneNumber}
                                         />
-                                    </div>
+                                    </div> */}
                                     <div className='form-control'>
                                         <label>Country</label>
                                         <select value={country} onChange={(e) => setCountry(e.target.value)}>
