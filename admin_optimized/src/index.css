@@ -98,6 +98,9 @@ body {
   display: ruby-text;
 }
 
+.category-manager {
+  text-align: left;
+}
 
 .confirmation-box .mini-window .heading {
   padding-bottom: 10px;
