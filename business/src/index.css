@@ -1651,6 +1651,15 @@ thead tr td {
   z-index: 100;
 }
 
+.info-message-wrapper {
+  padding: 10px;
+  margin: 30px;
+  background: #d4e9db;
+  border: 3px solid #133b2b;
+  border-radius: 15px;
+  box-shadow: 5px 5px 19px 4px #00000029;
+}
+
 .widget-fixed-section {
   min-height: 225px;
 }

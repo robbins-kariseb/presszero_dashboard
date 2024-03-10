@@ -143,25 +143,11 @@ const ReportsDashboard = () => {
                 addons={<WidgetPlatformMetrics timeseriesIndex={timeSeriesTab} metrics={tabMetrics} />}
             >
                 <div className='col-4x4'>
-                    <div style={{width: "100%"}} className='widget-container db-v-2 col-3x4'>
-                        <div className='report-heading'>
-                            <h4>Press Zero Campaign Overview</h4>
-                        </div>
-                        {/* <div className='col-2x2 chart-container'>
-                            <div className='col-1x2 chart-wrapper'>
-                                <SpecifiedDomainRadarChart heading={"Distribution of Subscribed Companies"} />
-                            </div>
-                            <div className='col-1x2 chart-wrapper'>
-                                <SpecifiedDomainRadarChart heading={"High Volume Categories"} />
-                            </div>
-                        </div> */}
-                        <div className='col-2x2 chart-container'>
-                            {/* <div style={{width: "100%"}} className='col-1x2 chart-wrapper'>
-                                <GenericBarChart heading={"Subscriptions by Month"} />
-                            </div> */}
-                            <h4>Reports pending Implementation.</h4>
-                        </div>
-                    </div>
+                    <h4 className='info-message-wrapper'>Dashboard Report View has not been implemented as of yet! Changes to the view will reflect here as project progresses!</h4>
+                </div>
+
+                <div className='col-4x4'>
+                    
                 </div>
             </PageContainer>
             {preview && <NewCompanyForm handleClose={hidePreview} popupType={preview.type} item={preview.item} />}

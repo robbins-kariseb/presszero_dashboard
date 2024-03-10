@@ -174,94 +174,11 @@ function CompanyReportsView() {
                 addons={<WidgetCompanyMetrics item={indexedViewData} timeseriesIndex={timeSeriesTab} metrics={tabMetrics} />}
             >
                 <div className='col-4x4'>
-                    <div style={{ width: "86%", borderBottom: `10px solid ${indexedViewData.hexColours||"white"}` }} className='widget col-1x4'>
-                        <div className='col-2x2'>
-                            <div className='widget col-1x2'>
-                                <div className='col-2x2 metric-wrapper flex-box end-to-end'>
-                                    <div className='logo-wrapper metric'>
-                                        <img
-                                            src={indexedViewData.logoUrl}
-                                            alt="logo"
-                                            onError={(e) => {
-                                                e.target.src = logo;
-                                            }}
-                                        />
-                                    </div>
-                                    <p style={{ width: "70%" }} className='metric'>{(indexedViewData.companySizeEstimate||"Unknown ").replaceAll(' ','')} employees</p>
-                                </div>
-                                <div className='group heading'>
-                                    <h3>Company Profile</h3>
-                                </div>
-
-                                <div className='info-wrapper'>
-                                    <div className='title-wrapper'>
-                                        <h4>{indexedViewData.businessName}</h4>
-                                        {indexedViewData.verified && <div className='verified-icon'>
-                                            <img src={verifiedIcon} alt="verified" />
-                                        </div>}
-                                    </div>
-                                    <p>{indexedViewData.description}</p>
-                                </div>
-                            </div>
-
-                            <div className='widget col-1x2'>
-                                <div className='category heading'>
-                                    {indexedViewData && indexedViewData.categoryList && indexedViewData.categoryList.map((e, idx) =>
-                                        <h3 key={idx} className='category-item'>{e}</h3>
-                                    )}
-                                </div>
-                                <div className='information heading'>
-                                    <StatusWidget text={queryOnlineStatus({company: indexedViewData}) ? "ONLINE" : "OFFLINE"} status={queryOnlineStatus({company: indexedViewData}) ? "new" : "pending"} />
-                                    <div className='business-hours-grid'>
-                                        <div className='heading'>
-                                            <h4>{queryCurrentDayOfWeek()}</h4>
-                                            <h4>Online {indexedViewData[`${queryCurrentDayOfWeek().toLowerCase()}OpeningTime`]}</h4>
-                                            <h4>Offline {indexedViewData[`${queryCurrentDayOfWeek().toLowerCase()}ClosingTime`]}</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='information heading'>
-                                    <label>Website</label>
-                                    <h3 className='category-item'><a target='_blank' href={indexedViewData.websiteUrl}>{indexedViewData.websiteUrl}</a></h3>
-                                </div>
-                                <div className='information heading'>
-                                    <label>Default Category</label>
-                                    <h3 className='category-item'>{indexedViewData.categoryDefault}</h3>
-                                </div>
-                                <div className='information heading'>
-                                    <label>Date Created</label>
-                                    <h3 className='category-item'>{indexedViewData.createdDate}</h3>
-                                </div>
-                                <div className='information heading'>
-                                    <label>Contact Number</label>
-                                    <h3 className='category-item'>{indexedViewData.phone || "+(___) ___ ___ ___"}</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <h4 className='info-message-wrapper'>Company Report View has not been implemented as of yet! Changes to the view will reflect here as project progresses!</h4>
                 </div>
 
                 <div className='col-4x4'>
-                    <div className='widget col-1x4'>
-                        <div className='group heading'>
-                            <h3>Company Management</h3>
-                        </div>
-                        <div className='list block'>
-                            {!indexedViewData.verified && <Button special={"icon-button"} icon={<span  className="material-symbols-outlined">verified</span>} title="Verify Company" />}
-                            {indexedViewData.verified && <Button special={"icon-button"} icon={<span  className="material-symbols-outlined">verified</span>} title="Unverify Company" />}
-
-                            <Button onClick={handleDelete} special={"icon-button"} icon={<span  className="material-symbols-outlined">delete</span>} title="Remove Company" />
-                            <Button special={"icon-button"} icon={<span  className="material-symbols-outlined">add</span>}  title="Add Category" />
-                        </div>
-                    </div>
-                    <div className='widget col-1x4'>
-                        <div className='group heading'>
-                            <h3>Profile Management</h3>
-                        </div>
-                        <div className='list block'>
-                            <Button onClick={()=>setPreview({item:indexedViewData, type:"edit"})} special={"icon-button"} icon={<span  className="material-symbols-outlined">edit</span>} title="Edit Profile" />
-                        </div>
-                    </div>
+                    
                 </div>
             </PageContainer>
             {preview && <CompanyProfileEditorPopup handleClose={hidePreview} popupType={preview.type} item={preview.item} />}

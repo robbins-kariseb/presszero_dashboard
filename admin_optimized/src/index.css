@@ -93,6 +93,15 @@ body {
   text-align: center;
 }
 
+.info-message-wrapper {
+  padding: 10px;
+  margin: 30px;
+  background: #d4e9db;
+  border: 3px solid #133b2b;
+  border-radius: 15px;
+  box-shadow: 5px 5px 19px 4px #00000029;
+}
+
 .mini-window .col-1x2 {
   text-align: center;
   display: ruby-text;
