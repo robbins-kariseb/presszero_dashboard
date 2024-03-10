@@ -454,6 +454,7 @@ export const queryOnlineStatus = ({ company }) => {
   
     const open = company[`${daycode.toLowerCase()}OpeningTime`];
     const close = company[`${daycode.toLowerCase()}ClosingTime`];
+    const available = company[`${daycode.toLowerCase()}Availability`];
     const currentUtcTime = getTimeInUTC().toTimeString().split(' ')[0];
   
     // Parse opening and closing times to Date objects
@@ -462,7 +463,7 @@ export const queryOnlineStatus = ({ company }) => {
     const currentTime = new Date(`1970-01-01T${currentUtcTime}Z`);
   
     // Check if the current time is between opening and closing times
-    return currentTime >= openingTime && currentTime <= closingTime;
+    return (currentTime >= openingTime && currentTime <= closingTime) && available;
   };
 
 export const getTimeInUTC = () => {
