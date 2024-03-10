@@ -1270,7 +1270,7 @@ thead tr td {
   transition: .2s ease;
 }
 
-.popup-window {
+/* .popup-window {
   width: 99%;
   height: 55vh;
   position: absolute;
@@ -1288,6 +1288,19 @@ thead tr td {
   -o-transition: transform 0.2s ease-in-out;
   transition: transform 0.2s ease-in-out;
   transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+  padding: 0px;
+  z-index: 100;
+} */
+
+.popup-window {
+  width: 99%;
+  height: 55vh;
+  position: absolute;
+  top: 200px;
+  border-radius: 0px;
+  background: #ffffffb5;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   padding: 0px;
   z-index: 100;
 }
