@@ -1,10 +1,14 @@
 import React from 'react'
 import Button from '../../components/Button'
+import warningIcon from '../../images/warning-icon.png'
 
 function ConfirmationPopup({heading, content, onConfirmed, onCancel, buttons}) {
     return (
         <div className="confirmation-box">
             <div className="mini-window">
+                <div className="mini-form-banner full-width" style={{width: "50%", margin: "auto"}}>
+                    <img src={warningIcon} alt="PZ Teams Banner" style={{width: 70}} />
+                </div>
                 <div className='heading'>
                     <h4>{heading}</h4>
                     <div className='content'>{content}</div>

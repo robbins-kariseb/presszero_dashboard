@@ -90,6 +90,12 @@ body {
   margin-top: 20vh;
   border-radius: 10px;
   padding: 30px;
+  text-align: center;
+}
+
+.mini-window .col-1x2 {
+  text-align: center;
+  display: ruby-text;
 }
 
 
@@ -97,8 +103,13 @@ body {
   padding-bottom: 10px;
 }
 
+.confirmation-box .mini-window .heading {
+  padding-bottom: 10px;
+}
+
 .confirmation-box .mini-window .heading h4 {
   padding-bottom: 30px;
+  font-size: 25px;
 }
 
 .confirmation-box .mini-window .col-1x2 .button {
