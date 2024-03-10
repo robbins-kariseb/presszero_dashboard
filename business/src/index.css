@@ -1665,7 +1665,7 @@ thead tr td {
 }
 
 .empty-text {
-  min-height: 300px;
+  min-height: 25vh;
   text-align: center;
   padding-top: 150px;
   color: #b7b7b7;
