@@ -174,7 +174,10 @@ function CompanyReportsView() {
                 addons={<WidgetCompanyMetrics item={indexedViewData} timeseriesIndex={timeSeriesTab} metrics={tabMetrics} />}
             >
                 <div className='col-4x4'>
-                    <h4 className='info-message-wrapper'>Company Report View has not been implemented as of yet! Changes to the view will reflect here as project progresses!</h4>
+                    <h4 className='info-message-wrapper'>
+                        Company Report View has not been implemented as of yet! Changes to the view will reflect here as project progresses!<br/>
+                        Should you like to see the dashboard, please click <a href="/dashboard">here</a>.
+                    </h4>
                 </div>
 
                 <div className='col-4x4'>
