@@ -279,7 +279,7 @@ export const queryOnlineStatus = ({ company }) => {
     // Parse opening and closing times to Date objects
     const openingTime = new Date(`1970-01-01T${open}Z`);
     const closingTime = new Date(`1970-01-01T${close}Z`);
-    const currentTime = new Date(`1970-01-01T${currentUtcTime}Z`);
+    const currentTime = new Date(); // new Date(`1970-01-01T${currentUtcTime}Z`);
   
     // Check if the current time is between opening and closing times
     return (currentTime >= openingTime && currentTime <= closingTime) && available;
