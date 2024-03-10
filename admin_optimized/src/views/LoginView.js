@@ -63,12 +63,12 @@ function LoginView() {
                             <input type='password' value={password} onChange={(e)=>setPassword(e.target.value)} placeholder='Password' />
                         </div>
 
-                        <div className='form-control'>
+                        {/* <div className='form-control'>
                             <div className='wrap'>
                                 <input type='checkbox' placeholder='Remember Me?' />
                                 <label>Remember me?</label>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className='form-control'>
                             <input className='enabled' onClick={handleSignin} type='button' value='Sign in' />
