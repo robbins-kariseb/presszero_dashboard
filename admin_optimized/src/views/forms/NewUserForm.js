@@ -145,7 +145,7 @@ function NewUserForm({ item, handleClose }) {
                                     <div className='form-control'>
                                         <label>Access</label>
                                         <select value={accessGroup} onChange={(e) => setAccessGroup(e.target.value)}>
-                                            {["admin", "agent", "super-user"].map((m, idx) => <option key={idx} value={m}>{m}</option>)}
+                                            {["owner", "admin", "agent", "super-user"].map((m, idx) => <option key={idx} value={m}>{m}</option>)}
                                         </select>
                                     </div>
                                     <div className='form-control'>
