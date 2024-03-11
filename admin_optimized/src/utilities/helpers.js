@@ -279,7 +279,7 @@ export const queryOnlineStatus = ({ company }) => {
     const openingTime = new Date(`1970-01-01T${open}Z`);
     const closingTime = new Date(`1970-01-01T${close}Z`);
     // Implement support for UTC time conversions.
-    const currentTime = new Date(); // new Date(`1970-01-01T${currentUtcTime}Z`);
+    const currentTime = new Date(`1970-01-01T${(new Date()).toTimeString().split(' ')[0]}Z`); // new Date(`1970-01-01T${currentUtcTime}Z`);
   
     // Check if the current time is between opening and closing times
     return (currentTime >= openingTime && currentTime <= closingTime) && available;
