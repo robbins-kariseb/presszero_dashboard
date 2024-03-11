@@ -304,11 +304,11 @@ function CompanyUserView() {
                                                                             const password = generateRandomHex(5)
 
                                                                             const magicLink = await controller.createMagicLink({ email: e.email, password: access_code })
-                                                                            controller.updateAccessKeys({
-                                                                                userId: e.id,
-                                                                                access_key: access_code
-                                                                            })
                                                                             if (e.accessGroup === 'owner') {
+                                                                                controller.updateAccessKeys({
+                                                                                    userId: e.id,
+                                                                                    access_key: access_code
+                                                                                })
                                                                                 controller.sendSystemEmail({
                                                                                     email: e.email,
                                                                                     subject: `Press Zero Business Onboarding`,
@@ -322,10 +322,11 @@ function CompanyUserView() {
                                                                                     }
                                                                                 })
                                                                             } else if (e.accessGroup === 'agent') {
-                                                                                controller.updateAdminPassword({
+                                                                                await controller.updateAdminPassword({
                                                                                     userId: e.id,
                                                                                     password: password
                                                                                 }).then((res) => {
+                                                                                    console.log(res)
                                                                                     controller.sendSystemEmail({
                                                                                         email: e.email,
                                                                                         subject: `Invitation to Collaborate on Press Zero!`,
@@ -342,6 +343,10 @@ function CompanyUserView() {
                                                                                     })
                                                                                 })
                                                                             } else {
+                                                                                controller.updateAccessKeys({
+                                                                                    userId: e.id,
+                                                                                    access_key: access_code
+                                                                                })
                                                                                 controller.sendSystemEmail({
                                                                                     email: e.email,
                                                                                     subject: `Invitation to Collaborate on Press Zero!`,

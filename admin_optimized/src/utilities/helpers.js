@@ -268,7 +268,6 @@ export const queryCurrentDayOfWeek = () => {
 }
 
 export const queryOnlineStatus = ({ company }) => {
-    console.log(company)
     const daycode = queryCurrentDayOfWeek();
   
     const open = company[`${daycode.toLowerCase()}OpeningTime`];
@@ -279,6 +278,7 @@ export const queryOnlineStatus = ({ company }) => {
     // Parse opening and closing times to Date objects
     const openingTime = new Date(`1970-01-01T${open}Z`);
     const closingTime = new Date(`1970-01-01T${close}Z`);
+    // Implement support for UTC time conversions.
     const currentTime = new Date(); // new Date(`1970-01-01T${currentUtcTime}Z`);
   
     // Check if the current time is between opening and closing times
