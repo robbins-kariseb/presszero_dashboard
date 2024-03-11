@@ -82,12 +82,25 @@ const OverviewDashboard = () => {
         } else if (tab === 1) {
             const dataset = unfilteredData.filter((a) => {
                 return a.verified === false;
-            })
-
-            setData(dataset)
+            });
+        
+            // Sort the dataset by business name in ascending order
+            dataset.sort((a, b) => {
+                if (a.businessName < b.businessName) {
+                    return -1;
+                }
+                if (a.businessName > b.businessName) {
+                    return 1;
+                }
+                return 0;
+            });
+        
+            setData(dataset);
         } else if (tab === 2) {
+            // CLIENT REQUEST: Sort by most requested to least requested!
             setData(requestedCompanies.sort((a, b) => b.requestCount - a.requestCount))
         }
+
     }, [tab, universalChangeCounter])
 
     React.useEffect(() => { }, [businesses])
